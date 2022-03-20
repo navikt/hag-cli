@@ -1,0 +1,28 @@
+name: build
+on:
+    push:
+        branches:
+            - main
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v2
+            -   uses: actions/setup-java@v2
+                with:
+                    distribution: 'temurin'
+                    java-version: '17.x'
+                    cache: 'gradle'
+            -   name: test and build
+                run: ./gradlew build
+    snyk:
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v1
+            -   name: Gradle vulnerability check
+                uses: snyk/actions/gradle-jdk16@master
+                env:
+                    SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+                with:
+                    args: --org=tbd-ty7 --fail-on=all --project-name=bomlo-cli
+                    command: monitor

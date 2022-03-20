@@ -8,7 +8,8 @@ import kotlin.system.exitProcess
 internal val log = LoggerFactory.getLogger("no.nav.helse.cli.App")
 
 private val commands = listOf<Command>(
-    CurrentPartitionsCommand()
+    CurrentPartitionsCommand(),
+    CurrentOffsetsCommand()
 )
 
 fun main(args: Array<String>) {

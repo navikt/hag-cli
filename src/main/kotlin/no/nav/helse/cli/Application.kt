@@ -9,7 +9,8 @@ internal val log = LoggerFactory.getLogger("no.nav.helse.cli.App")
 
 private val commands = listOf<Command>(
     CurrentPartitionsCommand(),
-    CurrentOffsetsCommand()
+    CurrentOffsetsCommand(),
+    FlowrateCommand()
 )
 
 fun main(args: Array<String>) {

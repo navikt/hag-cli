@@ -1,5 +1,6 @@
 package no.nav.helse.cli
 
+import no.nav.helse.cli.operations.getOffsets
 import no.nav.rapids_and_rivers.cli.ConsumerProducerFactory
 import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.consumer.OffsetAndMetadata
@@ -22,16 +23,15 @@ internal class CurrentOffsetsCommand : Command {
     override fun verify(factory: ConsumerProducerFactory) {}
 
     private fun printOffsets(client: AdminClient, consumerGroups: List<String>) {
-        consumerGroups.forEach { consumerGroup ->
-            client.listConsumerGroupOffsets(consumerGroup)
-                .partitionsToOffsetAndMetadata()
-                .get()
-                .also { println("Consumer group: $consumerGroup") }
+        getOffsets(client, consumerGroups)
+            .forEach { (consumerGroup, offsets) ->
+                println("Consumer group: $consumerGroup")
+                offsets
                 .toList()
                 .sortedWith(compareBy ({ it.first.topic().hashCode() }, { it.first.partition() }))
                 .forEach { (partition, offsetMetadata) ->
                     println("\t${partition.topic()}#${partition.partition()}: ${offsetMetadata.offset()}")
                 }
-        }
+            }
     }
 }

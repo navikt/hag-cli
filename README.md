@@ -27,6 +27,13 @@ java -jar build/libs/app.jar \
 tbd-spesialist-v1:   10 msgs/s [max:  228 msgs/s, avg:   23 msgs/s], tbd-spleis-v1:   41 msgs/s [max:   66 msgs/s, avg:   25 msgs/s]
 ```
 
+### Sette offsets manuelt:
+
+```shell
+% java -jar build/libs/app.jar \
+  config/prod-aiven.properties set_offsets tbd-spleis-v1 tbd.rapid.v1
+```
+
 
 ## Henvendelser
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub.

@@ -11,7 +11,8 @@ private val commands = listOf<Command>(
     CurrentPartitionsCommand(),
     CurrentOffsetsCommand(),
     FlowrateCommand(),
-    SetOffsetsCommand()
+    SetOffsetsCommand(),
+    TopicFlowrateCommand()
 )
 
 fun main(args: Array<String>) {

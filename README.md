@@ -27,6 +27,15 @@ java -jar build/libs/app.jar \
 tbd-spesialist-v1:   10 msgs/s [max:  228 msgs/s, avg:   23 msgs/s], tbd-spleis-v1:   41 msgs/s [max:   66 msgs/s, avg:   25 msgs/s]
 ```
 
+### Printe ut flowrate for topics:
+
+```shell
+% java -jar build/libs/app.jar \
+  config/prod-aiven.properties topic_flowrate tbd.rapid.v1
+
+tbd-spleis-v1:  160 msgs/s [max:  436 msgs/s, avg:   37 msgs/s]
+```
+
 ### Sette offsets manuelt:
 
 ```shell

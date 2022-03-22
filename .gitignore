@@ -11,6 +11,11 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 
+/*.base64
+/*.jks
+/*.p12
+/*.jts
+
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 

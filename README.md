@@ -53,6 +53,14 @@ Record produced to partition #5 with offset 7230180
 ====================================================
 ```
 
+### Hente secrets
+
+```shell
+./fetch-keystores.sh name-of-prod-secret optional-name-of-dev-secret
+```
+
+Det lages automatisk en fil kalt `config/prod-aiven.properties` og `config/dev-aiven.properties`.
+
 ## Henvendelser
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub.
 

@@ -43,6 +43,15 @@ tbd-spleis-v1:  160 msgs/s [max:  436 msgs/s, avg:   37 msgs/s]
   config/prod-aiven.properties set_offsets tbd-spleis-v1 tbd.rapid.v1
 ```
 
+### Produce melding på topic:
+```shell
+% java -jar build/libs/app.jar \
+  config/prod-aiven.properties produce tbd.rapid.v1 <record key> <path to file.json>
+
+====================================================
+Record produced to partition #5 with offset 7230180
+====================================================
+```
 
 ## Henvendelser
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub.

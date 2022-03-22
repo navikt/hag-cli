@@ -23,9 +23,9 @@ internal class ProduceCommand : Command {
         val contents = mapper.readTree(File(args[2]))
         factory.createProducer().also { producer ->
             producer.send(ProducerRecord(topic, key, contents.toString())).get().also { recordMetadata ->
-                println("==========================================")
+                println("========================================================")
                 println("Record produced to partition #${recordMetadata.partition()} with offset ${recordMetadata.offset()}")
-                println("==========================================")
+                println("========================================================")
             }
         }
     }

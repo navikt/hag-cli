@@ -13,7 +13,8 @@ private val commands = listOf<Command>(
     FlowrateCommand(),
     SetOffsetsCommand(),
     TopicFlowrateCommand(),
-    ProduceCommand()
+    ProduceCommand(),
+    DeleteConsumerGroupCommand()
 )
 
 fun main(args: Array<String>) {

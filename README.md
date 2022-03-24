@@ -56,7 +56,7 @@ Record produced to partition #5 with offset 7230180
 ### Slette en consumergruppe:
 ```shell
 % java -jar build/libs/app.jar \
-  config/prod-aiven.properties delete_consumer_group <consumer group>
+  config/prod-aiven.properties delete_consumer_group <consumer group> [optional topic name]
 
 ====================================================
 Consumer group tbd-spangre-utsettelser-v1 deleted

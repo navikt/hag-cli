@@ -42,7 +42,7 @@ private fun runAndVerifyCommand(factory: ConsumerProducerFactory, command: Comma
         println("Executing ${command.name} with $args")
         command.execute(factory, args)
         command.verify(factory)
-    } catch (err: Exception) {
+    } catch (err: IllegalArgumentException) {
         println("Failed to execute ${command.name}: ${err.message}")
         command.usage()
         exitProcess(1)

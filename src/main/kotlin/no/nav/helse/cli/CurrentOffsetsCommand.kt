@@ -30,7 +30,7 @@ internal class CurrentOffsetsCommand : Command {
                 .toList()
                 .sortedWith(compareBy ({ it.first.topic().hashCode() }, { it.first.partition() }))
                 .forEach { (partition, offsetMetadata) ->
-                    println("\t${partition.topic()}#${partition.partition()}: ${offsetMetadata.offset()}")
+                    println("\t${partition.topic()}#${partition.partition()}: ${offsetMetadata.offset()}, metadata: ${offsetMetadata.metadata() ?: "N/A"}")
                 }
             }
     }

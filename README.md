@@ -63,6 +63,52 @@ Consumer group tbd-spangre-utsettelser-v1 deleted
 ====================================================
 ```
 
+### Observere events på topic
+```shell
+% java -jar build/libs/app.jar \
+  config/prod-aiven.properties observe <topic name>
+
+behov                                       : 1378
+subsumsjon                                  : 679
+vedtaksperiode_endret                       : 257
+planlagt_påminnelse                         : 257
+vedtaksperiode_tid_i_tilstand               : 210
+infotrygdendring_uten_fnr                   : 165
+pong                                        : 140
+infotrygdendring                            : 110
+påminnelse                                  : 108
+vedtaksperiode_påminnet                     : 108
+utbetaling_endret                           : 59
+ny_søknad                                   : 54
+oppgavestyring_opprett                      : 44
+opprett_oppgave                             : 39
+oppgavestyring_utsatt                       : 37
+inntektsmelding                             : 37
+sendt_søknad_nav                            : 27
+vedtak_fattet                               : 25
+vedtaksperiode_forkastet                    : 25
+oppgavestyring_ferdigbehandlet              : 20
+hendelse_ikke_håndtert                      : 16
+oppgave_oppdatert                           : 14
+vedtaksperiode_godkjent                     : 13
+oppdrag_kvittering                          : 13
+transaksjon_status                          : 13
+utbetaling_utbetalt                         : 13
+sendt_søknad_arbeidsgiver                   : 12
+trenger_ikke_inntektsmelding                : 12
+app_status                                  : 7
+saksbehandler_løsning                       : 6
+oppgave_opprettet                           : 5
+ping                                        : 4
+opprett_oppgave_for_speilsaksbehandlere     : 2
+oppgavestyring_opprett_speilrelatert        : 2
+oppgavestyring_kort_periode                 : 2
+trenger_inntektsmelding                     : 2
+publisert_behov_for_inntektsmelding         : 2
+vedtaksperiode_avvist                       : 2
+behov_uten_fullstendig_løsning              : 1
+```
+
 ### Hente secrets
 
 ```shell

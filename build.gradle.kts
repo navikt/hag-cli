@@ -13,7 +13,7 @@ repositories {
     maven("https://jitpack.io")
 }
 
-val rapidsAndRiversCli = "1.0f9dacd"
+val rapidsAndRiversCli = "1.7c5c360"
 val junitJupiterVersion = "5.8.2"
 
 dependencies {

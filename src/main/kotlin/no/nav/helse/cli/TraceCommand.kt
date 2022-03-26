@@ -56,6 +56,7 @@ internal class TraceCommand : Command {
         })
         RapidsCliApplication(factory)
             .apply {
+                /* capture root message */
                 JsonRiver(this)
                     .validate { _, _, _ -> rootMessage == null }
                     .validate { _, node, _ -> node.path("@id").asText() == messageId }
@@ -63,6 +64,7 @@ internal class TraceCommand : Command {
                         println("Found message at partition=${record.partition()}, offset = ${record.offset()}")
                         rootMessage = Message(record, node, messageId)
                     }
+                /* capture all child (or child of children…) messages */
                 JsonRiver(this)
                     .validate { _, node, _ -> true == rootMessage?.erBarnAv(node.path("@forårsaket_av").path("id").asText(), depth) }
                     .onMessage { record, node ->
@@ -70,6 +72,7 @@ internal class TraceCommand : Command {
                         val message = Message(record, node, node.path("@id").asText())
                         rootMessage?.leggTil(parentId, message)
                     }
+                /* trigger shutdown when all partitions have been read up to the point collecting in $latestOffsets */
                 val shutdownRiver = JsonRiver(this)
                 shutdownRiver.onMessage { record, _ ->
                         upToDate.compute(TopicPartition(record.topic(), record.partition())) { topicPartition, _ ->
@@ -96,6 +99,15 @@ internal class TraceCommand : Command {
         private val node: JsonNode,
         private val id: String
     ) {
+        private val eventName by lazy {
+            if (node.hasNonNull("@behov")) node.path("@behov").joinToString(transform = JsonNode::asText)
+            else node.path("@event_name").asText()
+        }
+        private val extra by lazy {
+            if (node.path("@final").asBoolean()) " (FINAL)"
+            else ""
+        }
+
         private val children = mutableListOf<Message>()
 
         internal fun erBarnAv(otherId: String, depth: Int): Boolean {
@@ -109,15 +121,39 @@ internal class TraceCommand : Command {
             return children.any { it.leggTil(parentId, message) }
         }
 
-        private fun eventName(): String {
-            if (node.hasNonNull("@behov")) return "behov om ${node.path("@behov").map(JsonNode::asText).joinToString()}"
-            return node.path("@event_name").asText()
+        private fun decode(): String {
+            val sb = StringBuilder()
+            if (node.hasNonNull("vedtaksperiodeId")) {
+                sb.append("vedtaksperiodeId: ")
+                sb.append(node.path("vedtaksperiodeId").asText())
+                sb.append(" ")
+            }
+
+            if (node.hasNonNull("utbetalingId")) {
+                sb.append("utbetalingId: ")
+                sb.append(node.path("utbetalingId").asText())
+                sb.append(" ")
+            }
+            when (eventName) {
+                "vedtaksperiode_endret" -> sb.append(node.path("forrigeTilstand").asText()).append(" -> ").append(node.path("gjeldendeTilstand").asText())
+                "utbetaling_endret" -> sb.append(node.path("forrigeStatus").asText()).append(" -> ").append(node.path("gjeldendeStatus").asText())
+                "Godkjenning" -> node.path("@løsning").path("Godkjenning").takeUnless { it.isMissingNode || it.isNull }?.let { løsning ->
+                    sb.append("godkjent: ")
+                    sb.append(løsning.path("godkjent").asBoolean())
+                    if (løsning.path("automatiskBehandling").asBoolean()) sb.append(" (automatisk")
+                }
+                "Utbetaling" -> node.path("@løsning").path("Utbetaling").takeUnless { it.isMissingNode || it.isNull }?.let { løsning ->
+                    sb.append(løsning.path("status").asText())
+                }
+                else -> {}
+            }
+            return sb.toString()
         }
 
         override fun toString() = toString(0)
 
         private fun toString(depth: Int): String {
-            return "\t".repeat(depth) + "> ${eventName()}: $id (partition ${record.partition()}, offset ${record.offset()}${children.joinToString(separator = "") { "\n${it.toString(depth + 1) }" }}"
+            return "\t".repeat(depth) + "> $eventName$extra: $id (partition ${record.partition()}, offset ${record.offset()} ${decode()}${children.joinToString(separator = "") { "\n${it.toString(depth + 1) }" }}"
         }
     }
 

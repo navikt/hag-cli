@@ -164,21 +164,21 @@ hendelse_ikke_håndtert                     : 403 messages, summing to 0 MB
 
 Found message at partition=12, offset = 32551218
 Whole topic read, exiting
-> behov om Godkjenning: 888e3cb5-dc22-4e31-994a-fc8e1ef80c54 (partition 12, offset 32551218
-	> utbetaling_endret: c6e1687d-1600-408e-81e9-27653ae7fa77 (partition 12, offset 32551299
-	> utbetaling_endret: 9ddd2859-ba38-42bb-9635-63869e7fbddb (partition 12, offset 32551300
-	> vedtaksperiode_endret: 166980e5-ab23-42ae-87d7-5a232c0ac87d (partition 12, offset 32551301
-	> behov om Utbetaling: 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551302
-		> utbetaling_endret: fea5d772-d07f-47b1-a0ce-0f6712f6cea8 (partition 12, offset 32551312
-		> utbetaling_endret: 5dc35304-a634-4337-993d-9366be607735 (partition 12, offset 32551313
-		> utbetaling_utbetalt: 7ad36ca4-3536-40e5-923b-8a608d1231fa (partition 12, offset 32551314
-		> vedtaksperiode_endret: e564fa57-7937-4946-aa4b-3009f10d92f5 (partition 12, offset 32551315
-		> vedtak_fattet: c658ea11-45c5-462d-b433-3fa520452608 (partition 12, offset 32551316
-		> vedtaksperiode_endret: d6129000-023f-44ac-9f2e-1bf6162715c3 (partition 12, offset 32551317
-	> behov om Utbetaling: 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551303
-	> behov om Utbetaling: 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551306
-	> behov om Utbetaling: 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551308
-	> behov om Utbetaling: 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551309
+> Godkjenning: 888e3cb5-dc22-4e31-994a-fc8e1ef80c54 (partition 12, offset 32551218 vedtaksperiodeId: f1673abb-b0d9-4c64-897b-bcbabe23ffb3 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5
+	> utbetaling_endret: c6e1687d-1600-408e-81e9-27653ae7fa77 (partition 12, offset 32551299 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 IKKE_UTBETALT -> GODKJENT
+	> utbetaling_endret: 9ddd2859-ba38-42bb-9635-63869e7fbddb (partition 12, offset 32551300 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 GODKJENT -> SENDT
+	> vedtaksperiode_endret: 166980e5-ab23-42ae-87d7-5a232c0ac87d (partition 12, offset 32551301 vedtaksperiodeId: f1673abb-b0d9-4c64-897b-bcbabe23ffb3 AVVENTER_GODKJENNING -> TIL_UTBETALING
+	> Utbetaling: 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551302 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5
+		> utbetaling_endret: fea5d772-d07f-47b1-a0ce-0f6712f6cea8 (partition 12, offset 32551312 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 SENDT -> OVERFØRT
+		> utbetaling_endret: 5dc35304-a634-4337-993d-9366be607735 (partition 12, offset 32551313 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 OVERFØRT -> UTBETALT
+		> utbetaling_utbetalt: 7ad36ca4-3536-40e5-923b-8a608d1231fa (partition 12, offset 32551314 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5
+		> vedtaksperiode_endret: e564fa57-7937-4946-aa4b-3009f10d92f5 (partition 12, offset 32551315 vedtaksperiodeId: f1673abb-b0d9-4c64-897b-bcbabe23ffb3 TIL_UTBETALING -> AVSLUTTET
+		> vedtak_fattet: c658ea11-45c5-462d-b433-3fa520452608 (partition 12, offset 32551316 vedtaksperiodeId: f1673abb-b0d9-4c64-897b-bcbabe23ffb3 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5
+		> vedtaksperiode_endret: d6129000-023f-44ac-9f2e-1bf6162715c3 (partition 12, offset 32551317 vedtaksperiodeId: 7497b243-066a-4563-a3bf-5898640d22a0 AVVENTER_SØKNAD_UFERDIG_FORLENGELSE -> AVVENTER_SØKNAD_FERDIG_FORLENGELSE
+	> Utbetaling: 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551303 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 OVERFØRT
+	> Utbetaling (FINAL): 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551306 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 OVERFØRT
+	> Utbetaling: 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551308 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 AKSEPTERT
+	> Utbetaling (FINAL): 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551309 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 AKSEPTERT
 ````
 
 

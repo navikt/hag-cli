@@ -112,6 +112,7 @@ internal class TraceCommand : Command {
             if (node.path("@final").asBoolean()) " (FINAL)"
             else ""
         }
+        private val produced by lazy { Instant.ofEpochMilli(record.timestamp()).atZone(ZoneId.systemDefault()).toLocalDateTime() }
 
         private val children = mutableListOf<Message>()
 
@@ -160,10 +161,13 @@ internal class TraceCommand : Command {
             return sb.toString()
         }
 
-        override fun toString() = toString(0)
+        override fun toString() = toString(0, null)
 
-        private fun toString(depth: Int): String {
-            return "\t".repeat(depth) + "> $eventName$extra: $id (partition ${record.partition()}, offset ${record.offset()} ${decode()}${children.joinToString(separator = "") { "\n${it.toString(depth + 1) }" }}"
+        private fun toString(depth: Int, rootTimestamp: LocalDateTime?): String {
+            val diff = rootTimestamp?.let { Duration.between(rootTimestamp, produced) }?.let { duration ->
+                "${duration.toMinutes()} min(s) ${duration.toSecondsPart()} sec(s) "
+            } ?: ""
+            return "\t".repeat(depth) + "> $diff$eventName$extra: $id (partition ${record.partition()}, offset ${record.offset()} ${decode()}${children.joinToString(separator = "") { "\n${it.toString(depth + 1, rootTimestamp ?: produced) }" }}"
         }
     }
 

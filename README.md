@@ -126,6 +126,36 @@ vedtaksperiode_avvist                       : 2
 behov_uten_fullstendig_løsning              : 1
 ```
 
+### Måle antall events (og totalstørrelse) innenfor et tidsvindu
+
+````shell
+% java -jar build/libs/app.jar \
+  config/prod-aiven.properties measure tbd.rapid.v1 2022-03-26T06:00:00
+
+Consuming messages … [==================================================>] 100.0 %
+behov                                      : 45539 messages, summing to 104 MB
+subsumsjon                                 : 6824 messages, summing to 14 MB
+sendt_søknad_nav                           : 938 messages, summing to 10 MB
+sendt_søknad_arbeidsgiver                  : 741 messages, summing to 8 MB
+vedtaksperiode_endret                      : 3859 messages, summing to 8 MB
+pong                                       : 18375 messages, summing to 8 MB
+vedtaksperiode_påminnet                    : 9190 messages, summing to 6 MB
+infotrygdendring_uten_fnr                  : 6525 messages, summing to 6 MB
+påminnelse                                 : 9196 messages, summing to 5 MB
+utbetaling_utbetalt                        : 197 messages, summing to 3 MB
+app_status                                 : 1050 messages, summing to 3 MB
+utbetaling_endret                          : 967 messages, summing to 3 MB
+ny_søknad                                  : 829 messages, summing to 2 MB
+vedtaksperiode_tid_i_tilstand              : 3095 messages, summing to 2 MB
+infotrygdendring                           : 4350 messages, summing to 1 MB
+planlagt_påminnelse                        : 3859 messages, summing to 1 MB
+vedtak_fattet                              : 929 messages, summing to 0 MB
+transaksjon_status                         : 213 messages, summing to 0 MB
+oppdrag_kvittering                         : 213 messages, summing to 0 MB
+opprett_oppgave                            : 518 messages, summing to 0 MB
+hendelse_ikke_håndtert                     : 403 messages, summing to 0 MB
+````
+
 ### Hente secrets
 
 ```shell

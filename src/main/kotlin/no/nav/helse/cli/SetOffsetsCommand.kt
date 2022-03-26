@@ -1,6 +1,7 @@
 package no.nav.helse.cli
 
 import no.nav.helse.cli.operations.getOffsets
+import no.nav.helse.cli.operations.getPartitions
 import no.nav.rapids_and_rivers.cli.ConsumerProducerFactory
 import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.consumer.OffsetAndMetadata
@@ -21,14 +22,7 @@ internal class SetOffsetsCommand : Command {
         val topic = args[1]
         val client = factory.adminClient()
 
-        val partitions = client.describeTopics(listOf(topic))
-            .allTopicNames()
-            .get()
-            .getValue(topic)
-            .partitions()
-            .map { TopicPartition(topic, it.partition()) }
-            .sortedBy { it.partition() }
-
+        val partitions = getPartitions(client, topic).sortedBy { it.partition() }
         val currentOffsets = getOffsets(client, listOf(consumerGroup))
 
         println("$topic consists of ${partitions.size} partitions.")

@@ -16,7 +16,8 @@ private val commands = listOf<Command>(
     ProduceCommand(),
     DeleteConsumerGroupCommand(),
     ObserveCommand(),
-    ConsumersCommand()
+    ConsumersCommand(),
+    MeasureCommand()
 )
 
 fun main(args: Array<String>) {

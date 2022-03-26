@@ -69,8 +69,10 @@ internal class TraceCommand : Command {
                 /* capture all child (or child of children…) messages */
                 JsonRiver(this)
                     .validate { _, node, _ ->
-                        true == rootMessage?.erBarnAv(node.path("@forårsaket_av").path("id").asText(), depth) ||
-                            true == rootMessage?.erBarnAv(node.path("@id").asText(), depth)
+                        true == rootMessage?.erBarnAv(node.path("@forårsaket_av").path("id").asText(), depth)
+                            || true == rootMessage?.erBarnAv(node.path("@id").asText(), depth)
+                            || (node.path("@event_name").asText() == "saksbehandler_løsning" && true == rootMessage?.erBarnAv(node.path("hendelseId").asText(), depth))
+
                     }
                     .onMessage { record, node ->
                         val parentId = node.path("@forårsaket_av").path("id").asText()
@@ -126,6 +128,7 @@ internal class TraceCommand : Command {
         internal fun leggTil(parentId: String, message: Message): Boolean {
             if (this.id == parentId) return children.add(message)
             if (matchAgainstSaksbehandlerløsning(message.id)) return children.add(message) // weirdness for matching Godkjenning-solution against saksbehandler_løsning
+            if (message.eventName == "saksbehandler_løsning" && message.node.path("hendelseId").asText() == this.id) return children.add(message) // weirdness for matching saksbehandler_løsning against Godkjenning-need
             return children.reversed().any { it.leggTil(parentId, message) }
         }
 

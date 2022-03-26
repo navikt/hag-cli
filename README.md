@@ -63,6 +63,23 @@ Consumer group tbd-spangre-utsettelser-v1 deleted
 ====================================================
 ```
 
+```
+### Liste alle consumers av en topic:
+```shell
+% java -jar build/libs/app.jar \
+  config/prod-aiven.properties consumers <topic name>
+
+Consumers of topic tbd.rapid.v1
+- helserisk-treskeverk-consumer
+- sigmund-consumer
+- spedisjon-v1
+- tbd-behovsakkumulator-v1
+- tbd-spaghet-v1
+- tbd-spammer-v1
+- tbd-spare-v1
+…
+```
+
 ### Observere events på topic
 ```shell
 % java -jar build/libs/app.jar \

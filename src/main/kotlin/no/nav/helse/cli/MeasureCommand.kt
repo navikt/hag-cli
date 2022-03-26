@@ -13,9 +13,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.common.TopicPartition
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 import kotlin.math.abs
-import kotlin.math.roundToInt
 import kotlin.random.Random
 import kotlin.system.exitProcess
 
@@ -52,7 +50,6 @@ internal class MeasureCommand : Command {
             .partitionsAssignedFirstTime { consumer, partitionsAssigned ->
                 partitionsAssigned.forEach { partition ->
                     val offset = offsetsForTime.getValue(partition)
-                    println("Seeking to $offset for $partition")
                     consumer.seek(partition, offset)
                 }
             }
@@ -87,13 +84,13 @@ internal class MeasureCommand : Command {
             print("\rConsuming messages … ${overall.toString(50)}")
 
             overall.done {
-                println()
+                print("\r${"".repeat(90)}") // clear progress bar
                 val largestName = events.keys.maxOf { it.length }
                 events
                    .toList()
                    .sortedWith(compareByDescending({ it.second.sum() }))
                    .forEach { (event, sizes) ->
-                       println("${event.padEnd(largestName + 4)}: ${sizes.size} messages, summing to ${sizes.sum()/(1024.0*1024.0).roundToInt()} MB")
+                       println("${event.padEnd(largestName + 4)}: ${sizes.size} messages, summing to ${byteSizeToString(sizes.sum())}")
                    }
                 exitProcess(0)
             }
@@ -105,6 +102,12 @@ internal class MeasureCommand : Command {
                 .forEach { (partition, progress) ->
                     println("#${partition.partition().toString().padStart(2)}: ${progress.toString(50)}")
                 }*/
+        }
+
+        private fun byteSizeToString(length: Int): String {
+            if (length < 1024) return "$length B";
+            val zeros = (32 - length.countLeadingZeroBits()) / 10;
+            return String.format("%.1f %sB", length.toDouble() / (1L.shl(zeros*10)), " KMGTPE"[zeros])
         }
     }
 

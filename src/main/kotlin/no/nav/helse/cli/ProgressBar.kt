@@ -46,13 +46,13 @@ internal class ProgressBar(private val maxValue: Number) {
         sb.append(">".padEnd(remainder, ' '))
         sb.append("]")
         sb.append(" ")
-        sb.append(progress.roundToDoubleTwoDecimals())
+        sb.append(progress.roundToDoubleTwoDecimals().toString().padEnd(5, '0'))
         sb.append(" %")
         return sb.toString()
     }
 
     internal companion object {
-        fun progressBar(progressbars: Collection<ProgressBar>, maxWidth: Int = 10): ProgressBar {
+        fun progressBar(progressbars: Collection<ProgressBar>): ProgressBar {
             return ProgressBar(1).also { it.progress = progressbars.map { it.progress }.percentage() }
         }
     }

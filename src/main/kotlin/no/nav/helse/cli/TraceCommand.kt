@@ -126,7 +126,7 @@ internal class TraceCommand : Command {
         internal fun leggTil(parentId: String, message: Message): Boolean {
             if (this.id == parentId) return children.add(message)
             if (matchAgainstSaksbehandlerløsning(message.id)) return children.add(message) // weirdness for matching Godkjenning-solution against saksbehandler_løsning
-            return children.any { it.leggTil(parentId, message) }
+            return children.reversed().any { it.leggTil(parentId, message) }
         }
 
         private fun matchAgainstSaksbehandlerløsning(id: String) =

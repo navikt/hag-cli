@@ -2,7 +2,6 @@ package no.nav.helse.cli
 
 import no.nav.rapids_and_rivers.cli.ConsumerProducerFactory
 import org.apache.kafka.common.TopicPartition
-import org.apache.kafka.common.errors.GroupIdNotFoundException
 
 internal class DeleteConsumerGroupCommand : Command {
     override val name = "delete_consumer_group"
@@ -30,7 +29,9 @@ internal class DeleteConsumerGroupCommand : Command {
                         try {
                             println("Deleting offsets for partition $partition")
                             result.partitionResult(partition).get()
-                        } catch (err: Exception) { /* do nothing */ }
+                        } catch (err: Exception) {
+                            println("\tError: ${err.message}")
+                        }
                     }
                 }
         }
@@ -38,7 +39,7 @@ internal class DeleteConsumerGroupCommand : Command {
             println("Deleting consumer group alltogether")
             client.deleteConsumerGroups(listOf(consumerGroup)).all().get()
         } catch (err: Exception) {
-            /* do nothing */
+            println("\tError: ${err.message}")
         }
         println("========================================================")
         println("Consumer group $consumerGroup deleted")

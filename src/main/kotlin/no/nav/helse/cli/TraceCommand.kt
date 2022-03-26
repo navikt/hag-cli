@@ -11,6 +11,8 @@ import no.nav.rapids_and_rivers.cli.RapidsCliApplication
 import org.apache.kafka.clients.admin.OffsetSpec
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.common.TopicPartition
+import java.time.Duration
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.LinkedList
@@ -66,7 +68,10 @@ internal class TraceCommand : Command {
                     }
                 /* capture all child (or child of children…) messages */
                 JsonRiver(this)
-                    .validate { _, node, _ -> true == rootMessage?.erBarnAv(node.path("@forårsaket_av").path("id").asText(), depth) }
+                    .validate { _, node, _ ->
+                        true == rootMessage?.erBarnAv(node.path("@forårsaket_av").path("id").asText(), depth) ||
+                            true == rootMessage?.erBarnAv(node.path("@id").asText(), depth)
+                    }
                     .onMessage { record, node ->
                         val parentId = node.path("@forårsaket_av").path("id").asText()
                         val message = Message(record, node, node.path("@id").asText())
@@ -113,13 +118,18 @@ internal class TraceCommand : Command {
         internal fun erBarnAv(otherId: String, depth: Int): Boolean {
             if (depth < 0) return false
             if (this.id == otherId) return true
+            if (matchAgainstSaksbehandlerløsning(otherId)) return true // weirdness for matching Godkjenning-solution against saksbehandler_løsning
             return children.any { it.erBarnAv(otherId, depth - 1) }
         }
 
         internal fun leggTil(parentId: String, message: Message): Boolean {
             if (this.id == parentId) return children.add(message)
+            if (matchAgainstSaksbehandlerløsning(message.id)) return children.add(message) // weirdness for matching Godkjenning-solution against saksbehandler_løsning
             return children.any { it.leggTil(parentId, message) }
         }
+
+        private fun matchAgainstSaksbehandlerløsning(id: String) =
+            this.eventName == "saksbehandler_løsning" && id == this.node.path("hendelseId").asText()
 
         private fun decode(): String {
             val sb = StringBuilder()

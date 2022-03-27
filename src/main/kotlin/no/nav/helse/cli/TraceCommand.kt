@@ -66,7 +66,7 @@ internal class TraceCommand : Command {
                     .validate { _, node, _ ->
                         true == rootMessage?.erBarnAv(node.path("@forårsaket_av").path("id").asText(), depth)
                             || true == rootMessage?.erBarnAv(node.path("@id").asText(), depth)
-                            || (node.path("@event_name").asText() == "saksbehandler_løsning" && true == rootMessage?.erBarnAv(node.path("hendelseId").asText(), depth))
+                            || (node.path("@event_name").asText() in setOf("oppgave_opprettet", "saksbehandler_løsning") && true == rootMessage?.erBarnAv(node.path("hendelseId").asText(), depth))
 
                     }
                     .onMessage { record, node ->
@@ -124,14 +124,14 @@ internal class TraceCommand : Command {
         internal fun erBarnAv(otherId: String, depth: Int): Boolean {
             if (depth < 0) return false
             if (this.id == otherId) return true
-            if (matchAgainstSaksbehandlerløsning(otherId)) return true // weirdness for matching Godkjenning-solution against saksbehandler_løsning
+            if (matchAgainstSaksbehandlerløsningOrOppgave(otherId)) return true // weirdness for matching Godkjenning-solution against saksbehandler_løsning
             return children.any { it.erBarnAv(otherId, depth - 1) }
         }
 
         internal fun leggTil(parentId: String, message: Message): Boolean {
             if (this.id == parentId) return add(message)
-            if (matchAgainstSaksbehandlerløsning(message.id)) return add(message) // weirdness for matching Godkjenning-solution against saksbehandler_løsning
-            if (message.eventName == "saksbehandler_løsning" && message.node.path("hendelseId").asText() == this.id) return add(message) // weirdness for matching saksbehandler_løsning against Godkjenning-need
+            if (matchAgainstSaksbehandlerløsningOrOppgave(message.id)) return add(message) // weirdness for matching Godkjenning-solution against saksbehandler_løsning
+            if (message.matchAgainstSaksbehandlerløsningOrOppgave(this.id)) return add(message) // weirdness for matching saksbehandler_løsning against Godkjenning-need
             return children.reversed().any { it.leggTil(parentId, message) }.also {
                 if (it) message.parents.add(0, this)
             }
@@ -142,8 +142,8 @@ internal class TraceCommand : Command {
             return children.add(other)
         }
 
-        private fun matchAgainstSaksbehandlerløsning(id: String) =
-            this.eventName == "saksbehandler_løsning" && id == this.node.path("hendelseId").asText()
+        private fun matchAgainstSaksbehandlerløsningOrOppgave(id: String) =
+            this.eventName in setOf("oppgave_opprettet", "saksbehandler_løsning") && id == this.node.path("hendelseId").asText()
 
         private fun decode(): String {
             val sb = StringBuilder()

@@ -15,10 +15,7 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.LinkedList
-import kotlin.math.abs
 import kotlin.random.Random
-import kotlin.system.exitProcess
 
 internal class TraceCommand : Command {
     private companion object {
@@ -53,9 +50,6 @@ internal class TraceCommand : Command {
         val upToDate = latestOffsets.mapValues { false }.toMutableMap()
 
         var rootMessage: Message? = null
-        Runtime.getRuntime().addShutdownHook(Thread {
-            println(rootMessage?.toString())
-        })
         RapidsCliApplication(factory)
             .apply {
                 /* capture root message */
@@ -65,6 +59,7 @@ internal class TraceCommand : Command {
                     .onMessage { record, node ->
                         println("Found message at partition=${record.partition()}, offset = ${record.offset()}")
                         rootMessage = Message(record, node, messageId)
+                        println(rootMessage)
                     }
                 /* capture all child (or child of children…) messages */
                 JsonRiver(this)
@@ -77,7 +72,9 @@ internal class TraceCommand : Command {
                     .onMessage { record, node ->
                         val parentId = node.path("@forårsaket_av").path("id").asText()
                         val message = Message(record, node, node.path("@id").asText())
-                        rootMessage?.leggTil(parentId, message)
+                        if (true == rootMessage?.leggTil(parentId, message)) {
+                            println(message.toString())
+                        }
                     }
                 /* trigger shutdown when all partitions have been read up to the point collecting in $latestOffsets */
                 val shutdownRiver = JsonRiver(this)
@@ -93,6 +90,9 @@ internal class TraceCommand : Command {
                         }
                     }
             }
+            .onShutdown {
+                println(rootMessage?.toString())
+            }
             .partitionsAssignedFirstTime { consumer, partitionsAssigned ->
                 partitionsAssigned.forEach { partition ->
                     consumer.seek(partition, offsetsForTime.getValue(partition))
@@ -106,6 +106,9 @@ internal class TraceCommand : Command {
         private val node: JsonNode,
         private val id: String
     ) {
+        private val parents = mutableListOf<Message>()
+        private val depth get() = parents.size
+
         private val eventName by lazy {
             if (node.hasNonNull("@behov")) node.path("@behov").joinToString(transform = JsonNode::asText)
             else node.path("@event_name").asText()
@@ -126,10 +129,17 @@ internal class TraceCommand : Command {
         }
 
         internal fun leggTil(parentId: String, message: Message): Boolean {
-            if (this.id == parentId) return children.add(message)
-            if (matchAgainstSaksbehandlerløsning(message.id)) return children.add(message) // weirdness for matching Godkjenning-solution against saksbehandler_løsning
-            if (message.eventName == "saksbehandler_løsning" && message.node.path("hendelseId").asText() == this.id) return children.add(message) // weirdness for matching saksbehandler_løsning against Godkjenning-need
-            return children.reversed().any { it.leggTil(parentId, message) }
+            if (this.id == parentId) return add(message)
+            if (matchAgainstSaksbehandlerløsning(message.id)) return add(message) // weirdness for matching Godkjenning-solution against saksbehandler_løsning
+            if (message.eventName == "saksbehandler_løsning" && message.node.path("hendelseId").asText() == this.id) return add(message) // weirdness for matching saksbehandler_løsning against Godkjenning-need
+            return children.reversed().any { it.leggTil(parentId, message) }.also {
+                if (it) message.parents.add(0, this)
+            }
+        }
+
+        private fun add(other: Message): Boolean {
+            other.parents.add(this)
+            return children.add(other)
         }
 
         private fun matchAgainstSaksbehandlerløsning(id: String) =
@@ -164,7 +174,7 @@ internal class TraceCommand : Command {
             return sb.toString()
         }
 
-        override fun toString() = toString(0, null)
+        override fun toString() = toString(depth, parents.firstOrNull()?.produced)
 
         private fun toString(depth: Int, rootTimestamp: LocalDateTime?): String {
             val diff = rootTimestamp?.let { Duration.between(rootTimestamp, produced) }?.let { duration ->

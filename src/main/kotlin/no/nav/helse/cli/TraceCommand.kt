@@ -115,7 +115,8 @@ internal class TraceCommand : Command {
         }
         private val extra by lazy {
             if (node.path("@final").asBoolean()) " (FINAL)"
-            else ""
+            else if (!node.path("@løsning").isEmpty) " (DELLØSNING)"
+            else " (UTGÅENDE BEHOV)"
         }
         private val produced by lazy { Instant.ofEpochMilli(record.timestamp()).atZone(ZoneId.systemDefault()).toLocalDateTime() }
 

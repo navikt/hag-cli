@@ -22,8 +22,6 @@ internal class TraceCommand : Command {
         private const val DEFAULT_DEPTH = 3
     }
     override val name = "trace"
-    private val mapper = jacksonObjectMapper()
-        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 
     override fun usage() {
         println("Usage: $name <topic> <id> [<depth>] [<from timestamp>]")
@@ -114,7 +112,8 @@ internal class TraceCommand : Command {
             else node.path("@event_name").asText()
         }
         private val extra by lazy {
-            if (node.path("@final").asBoolean()) " (FINAL)"
+            if (!node.hasNonNull("@behov")) ""
+            else if (node.path("@final").asBoolean()) " (FINAL)"
             else if (!node.path("@løsning").isEmpty) " (DELLØSNING)"
             else " (UTGÅENDE BEHOV)"
         }

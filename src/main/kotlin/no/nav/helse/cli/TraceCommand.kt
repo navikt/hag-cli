@@ -188,7 +188,7 @@ internal class TraceCommand : Command {
             val diff = rootTimestamp?.let { Duration.between(rootTimestamp, produced) }?.let { duration ->
                 "${duration.toMinutes()} min(s) ${duration.toSecondsPart()} sec(s) "
             } ?: ""
-            return "  ".repeat(depth) + "> ($depth) $diff$eventName$extra: $id (partition ${record.partition()}, offset ${record.offset()}) ${decode()}${children.joinToString(separator = "") { "\n${it.toString(depth + 1, rootTimestamp ?: produced) }" }}"
+            return "  ".repeat(depth) + "> $diff$eventName$extra (↧ $depth): $id (partition ${record.partition()}, offset ${record.offset()}) ${decode()}${children.joinToString(separator = "") { "\n${it.toString(depth + 1, rootTimestamp ?: produced) }" }}"
         }
     }
 

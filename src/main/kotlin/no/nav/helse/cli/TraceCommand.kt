@@ -130,11 +130,13 @@ internal class TraceCommand : Command {
 
         internal fun leggTil(parentId: String, message: Message): Boolean {
             if (this.id == parentId) return add(message)
+            if (children.reversed().any { it.leggTil(parentId, message) }) {
+                message.parents.add(0, this)
+                return true
+            }
             if (matchAgainstSaksbehandlerløsningOrOppgave(message.id)) return add(message) // weirdness for matching Godkjenning-solution against saksbehandler_løsning
             if (message.matchAgainstSaksbehandlerløsningOrOppgave(this.id)) return add(message) // weirdness for matching saksbehandler_løsning against Godkjenning-need
-            return children.reversed().any { it.leggTil(parentId, message) }.also {
-                if (it) message.parents.add(0, this)
-            }
+            return false
         }
 
         private fun add(other: Message): Boolean {

@@ -108,7 +108,7 @@ internal class TraceCommand : Command {
         private val depth get() = parents.size
 
         private val eventName by lazy {
-            if (node.hasNonNull("@behov")) node.path("@behov").joinToString(transform = JsonNode::asText)
+            if (node.hasNonNull("@behov")) behovName(node.path("@behov").joinToString(transform = JsonNode::asText))
             else node.path("@event_name").asText()
         }
         private val extra by lazy {
@@ -118,8 +118,14 @@ internal class TraceCommand : Command {
             else " (UTGÅENDE BEHOV)"
         }
         private val produced by lazy { Instant.ofEpochMilli(record.timestamp()).atZone(ZoneId.systemDefault()).toLocalDateTime() }
-
         private val children = mutableListOf<Message>()
+
+        private fun behovName(behov: String) = when (behov) {
+            "Foreldrepenger, Pleiepenger, Omsorgspenger, Opplæringspenger, Institusjonsopphold, Arbeidsavklaringspenger, Dagpenger, Dødsinfo" -> "Ytelser (uten sykepengehistorikk)"
+            "Sykepengehistorikk, Foreldrepenger, Pleiepenger, Omsorgspenger, Opplæringspenger, Institusjonsopphold, Arbeidsavklaringspenger, Dagpenger, Dødsinfo" -> "Ytelser (med sykepengehistorikk)"
+            "InntekterForSykepengegrunnlag, ArbeidsforholdV2, InntekterForSammenligningsgrunnlag, Medlemskap" -> "Vilkårsgrunnlag"
+            else -> behov
+        }
 
         internal fun erBarnAv(otherId: String, depth: Int): Boolean {
             if (depth < 0) return false
@@ -182,7 +188,7 @@ internal class TraceCommand : Command {
             val diff = rootTimestamp?.let { Duration.between(rootTimestamp, produced) }?.let { duration ->
                 "${duration.toMinutes()} min(s) ${duration.toSecondsPart()} sec(s) "
             } ?: ""
-            return "\t".repeat(depth) + "> $diff$eventName$extra: $id (partition ${record.partition()}, offset ${record.offset()}) ${decode()}${children.joinToString(separator = "") { "\n${it.toString(depth + 1, rootTimestamp ?: produced) }" }}"
+            return "  ".repeat(depth) + "> ($depth) $diff$eventName$extra: $id (partition ${record.partition()}, offset ${record.offset()}) ${decode()}${children.joinToString(separator = "") { "\n${it.toString(depth + 1, rootTimestamp ?: produced) }" }}"
         }
     }
 

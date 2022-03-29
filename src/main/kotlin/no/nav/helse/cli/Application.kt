@@ -18,7 +18,9 @@ private val commands = listOf<Command>(
     ObserveCommand(),
     ConsumersCommand(),
     MeasureCommand(),
-    TraceCommand()
+    TraceCommand(),
+    FollowCommand(),
+    FollowTopicCommand()
 )
 
 fun main(args: Array<String>) {

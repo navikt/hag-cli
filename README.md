@@ -181,6 +181,28 @@ Whole topic read, exiting
 	> Utbetaling (FINAL): 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551309 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 AKSEPTERT
 ````
 
+### Følge meldinger på en topic
+
+````shell
+% java -jar build/libs/app.jar \
+  config/prod-aiven.properties follow_topic <topic>
+
+#3, offset 7403511 - pong:  --> {"@event_name":"pong", …
+#5, offset 7403512 - pong:  --> {"@event_name":"pong",…
+…
+````
+
+### Følge meldinger for en person på en topic
+
+````shell
+% java -jar build/libs/app.jar \
+  config/prod-aiven.properties follow <topic> <fnr>
+
+#3, offset 7403511 - pong:  --> {"@event_name":"pong", …
+#5, offset 7403512 - pong:  --> {"@event_name":"pong",…
+…
+````
+
 
 ### Hente secrets
 

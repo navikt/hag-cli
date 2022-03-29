@@ -117,6 +117,9 @@ internal class TraceCommand : Command {
             else if (!node.path("@løsning").isEmpty) " (DELLØSNING)"
             else " (UTGÅENDE BEHOV)"
         }
+        private val sender by lazy {
+            node.path("system_participating_services").lastOrNull()?.path("instance")?.asText()?.let { "sender: $it, " } ?: ""
+        }
         private val produced by lazy { Instant.ofEpochMilli(record.timestamp()).atZone(ZoneId.systemDefault()).toLocalDateTime() }
         private val children = mutableListOf<Message>()
 
@@ -188,7 +191,7 @@ internal class TraceCommand : Command {
             val diff = rootTimestamp?.let { Duration.between(rootTimestamp, produced) }?.let { duration ->
                 "${duration.toMinutes()} min(s) ${duration.toSecondsPart()} sec(s) "
             } ?: ""
-            return "  ".repeat(depth) + "> $diff$eventName$extra (↧ $depth): $id (partition ${record.partition()}, offset ${record.offset()}) ${decode()}${children.joinToString(separator = "") { "\n${it.toString(depth + 1, rootTimestamp ?: produced) }" }}"
+            return "  ".repeat(depth) + "> $diff$eventName$extra (↧ $depth): $id (${sender}partition ${record.partition()}, offset ${record.offset()}) ${decode()}${children.joinToString(separator = "") { "\n${it.toString(depth + 1, rootTimestamp ?: produced) }" }}"
         }
     }
 

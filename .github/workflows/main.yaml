@@ -35,9 +35,9 @@ jobs:
     snyk:
         runs-on: ubuntu-latest
         steps:
-            -   uses: actions/checkout@v1
+            -   uses: actions/checkout@v3
             -   name: Gradle vulnerability check
-                uses: snyk/actions/gradle-jdk16@master
+                uses: snyk/actions/gradle@master
                 env:
                     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
                 with:

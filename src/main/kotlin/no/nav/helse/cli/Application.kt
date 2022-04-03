@@ -2,7 +2,6 @@ package no.nav.helse.cli
 
 import no.nav.rapids_and_rivers.cli.*
 import org.slf4j.LoggerFactory
-import java.io.File
 import kotlin.system.exitProcess
 
 internal val log = LoggerFactory.getLogger("no.nav.helse.cli.App")
@@ -20,7 +19,8 @@ private val commands = listOf<Command>(
     MeasureCommand(),
     TraceCommand(),
     FollowCommand(),
-    FollowTopicCommand()
+    FollowTopicCommand(),
+    CheckVersionCommand()
 )
 
 fun main(args: Array<String>) {
@@ -28,7 +28,6 @@ fun main(args: Array<String>) {
 }
 
 private fun app(args: List<String>) {
-    println("Provided args: $args")
     if (args.size < 2) return help()
     try {
         val config = resolveConfigFromProperties(args[0])
@@ -44,7 +43,6 @@ private fun app(args: List<String>) {
 
 private fun runAndVerifyCommand(factory: ConsumerProducerFactory, command: Command, args: List<String>) {
     try {
-        println("Executing ${command.name} with $args")
         command.execute(factory, args)
         command.verify(factory)
     } catch (err: IllegalArgumentException) {

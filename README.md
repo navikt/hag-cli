@@ -2,6 +2,43 @@
 
 OPS-verktøy for å håndtere vanlige use cases.
 
+## Oppdatere
+
+### Sjekke om det er ny oppdatering
+
+Avslutter med exitkode=10 om det er ny oppdatering
+```shell
+java -jar build/libs/app.jar \
+  config/prod-aiven.properties check_version
+
+Self version: 1.20220303071437
+Tag: 1.20220403071437
+New version available!
+Run with `--download` (and an optional filename) to automatically download the new binary
+```
+
+### Laste ned ny oppdatering (til stdout)
+
+Avslutter med exitkode=10 om det er ny oppdatering
+```shell
+java -jar build/libs/app.jar \
+  config/prod-aiven.properties check_version --download
+
+?3?R?!?r???F␊├/┘⎻⎺┤┼├≥/┤├␋┌/S▒°␊U├␋┌⎽.␌┌▒⎽⎽PK
+...
+```
+
+
+### Laste ned ny oppdatering (til fil)
+
+Avslutter med exitkode=10 om det er ny oppdatering
+```shell
+java -jar build/libs/app.jar \
+  config/prod-aiven.properties check_version --download app.jar
+```
+
+
+
 ## Eksempler
 
 ### Printe ut partitions for consumer-grupper:
@@ -51,8 +88,8 @@ tbd-spleis-v1:  160 msgs/s [max:  436 msgs/s, avg:   37 msgs/s]
 ====================================================
 Record produced to partition #5 with offset 7230180
 ====================================================
-
 ```
+
 ### Slette en consumergruppe:
 ```shell
 % java -jar build/libs/app.jar \
@@ -63,7 +100,7 @@ Consumer group tbd-spangre-utsettelser-v1 deleted
 ====================================================
 ```
 
-```
+
 ### Liste alle consumers av en topic:
 ```shell
 % java -jar build/libs/app.jar \

@@ -26,7 +26,7 @@ jobs:
                     java-version: '17.x'
                     cache: 'gradle'
             -   name: test and build
-                run: ./gradlew build -Pversion=${{ needs.set-version.outputs.version }}
+                run: ./gradlew build -Pversion=${{ needs.set-version.outputs.version }} -Prepository=${{ github.repository }}
             -   name: upload dist
                 uses: actions/upload-artifact@v3
                 with:

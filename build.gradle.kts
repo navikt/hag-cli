@@ -39,6 +39,9 @@ tasks {
             archiveVersion.orNull?.also { version ->
                 attributes["Implementation-Version"] = version
             }
+            project.findProperty("repository")?.also { repo ->
+                attributes["Implementation-Vendor"] = repo
+            }
         }
 
         // unzips all runtime dependencies (jars) and add the files

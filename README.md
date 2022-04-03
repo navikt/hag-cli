@@ -6,7 +6,7 @@ OPS-verktøy for å håndtere vanlige use cases.
 
 ### 1. Laste ned launcher-script:
 ```shell
-curl -fLO /usr/local/bin/rr https://github.com/navikt/bomlo-cli/releases/latest/download/rr && chmod +x /usr/local/bin/rr
+curl -fsLo /usr/local/bin/rr https://github.com/navikt/bomlo-cli/releases/latest/download/rr && chmod +x /usr/local/bin/rr
 ```
 
 ### 2. Hente secrets og generere config

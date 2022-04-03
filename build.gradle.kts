@@ -34,20 +34,17 @@ tasks {
 
     named<Jar>("jar") {
         archiveFileName.set("app.jar")
-
         manifest {
             attributes["Main-Class"] = "no.nav.helse.cli.ApplicationKt"
-            attributes["Class-Path"] = configurations.runtimeClasspath.get().joinToString(separator = " ") {
-                it.name
-            }
         }
 
-        doLast {
-            configurations.runtimeClasspath.get().forEach {
-                val file = File("$buildDir/libs/${it.name}")
-                if (!file.exists())
-                    it.copyTo(file)
-            }
+        // unzips all runtime dependencies (jars) and add the files
+        // to the application jar
+        from(configurations.runtimeClasspath.get().map(::zipTree)) {
+            // prints a warning to console to tell about duplicate files
+            duplicatesStrategy = DuplicatesStrategy.WARN
+            // don't copy any file matching logback.xml;
+            filesMatching("logback.xml") { exclude() }
         }
     }
 

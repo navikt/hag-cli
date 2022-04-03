@@ -2,6 +2,31 @@
 
 OPS-verktøy for å håndtere vanlige use cases.
 
+## Installere
+
+### 1. Laste ned launcher-script:
+```shell
+curl -fLO /usr/local/bin/rr https://github.com/navikt/bomlo-cli/releases/latest/download/rr && chmod +x /usr/local/bin/rr
+```
+
+### 2. Hente secrets og generere config
+
+Finn navn på minst prod-secret, og eventuelt en dev-secret, og kjør kommandoen nedenfor:
+
+```shell
+./fetch-keystores.sh name-of-prod-secret optional-name-of-dev-secret
+```
+
+Det lages automatisk en fil kalt `config/prod-aiven.properties` og `config/dev-aiven.properties`.
+
+### 3. Kjøre
+
+`rr` vil automatisk sjekke, og evt. laste ned, ny versjon av CLI-et.
+
+```shell
+rr config/prod-aiven.properties <en kommando>
+```
+
 ## Oppdatere
 
 ### Sjekke om det er ny oppdatering
@@ -239,15 +264,6 @@ Whole topic read, exiting
 #5, offset 7403512 - pong:  --> {"@event_name":"pong",…
 …
 ````
-
-
-### Hente secrets
-
-```shell
-./fetch-keystores.sh name-of-prod-secret optional-name-of-dev-secret
-```
-
-Det lages automatisk en fil kalt `config/prod-aiven.properties` og `config/dev-aiven.properties`.
 
 ## Henvendelser
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub.

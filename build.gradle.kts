@@ -36,6 +36,9 @@ tasks {
         archiveFileName.set("app.jar")
         manifest {
             attributes["Main-Class"] = "no.nav.helse.cli.ApplicationKt"
+            archiveVersion.orNull?.also { version ->
+                attributes["Implementation-Version"] = version
+            }
         }
 
         // unzips all runtime dependencies (jars) and add the files

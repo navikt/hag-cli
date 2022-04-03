@@ -31,7 +31,9 @@ jobs:
                 uses: actions/upload-artifact@v3
                 with:
                     name: binary
-                    path: build/libs/app.jar
+                    path: |
+                      build/libs/app.jar
+                      rr
                     if-no-files-found: error
     snyk:
         runs-on: ubuntu-latest
@@ -67,4 +69,4 @@ jobs:
                     gh release create ${{ needs.set-version.outputs.version }} \
                     --generate-notes \
                     --title "${{ needs.set-version.outputs.version }}" \
-                    ./app.jar
+                    ./app.jar ./rr

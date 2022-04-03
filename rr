@@ -1,0 +1,14 @@
+#!/bin/bash
+BINARY_PATH=/usr/local/bin/rr.jar
+if ! test -f $BINARY_PATH; then
+    echo "Downloading latest version"
+    BINARY_URL=$(curl -s https://api.github.com/repos/navikt/bomlo-cli/releases/latest | grep "browser_download_url.*jar" | cut -d : -f 2,3 | tr -d \" | xargs)
+    curl -fsLo - $BINARY_URL > $BINARY_PATH
+else
+    java -jar app.jar $1 check_version --download /tmp/rr-updated.jar
+    if test $? -eq 10; then
+        echo "New version was downloaded"
+        mv /tmp/rr-updated.jar $BINARY_PATH
+    fi
+fi
+java -jar $BINARY_PATH $@

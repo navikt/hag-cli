@@ -69,4 +69,4 @@ jobs:
                     gh release create ${{ needs.set-version.outputs.version }} \
                     --generate-notes \
                     --title "${{ needs.set-version.outputs.version }}" \
-                   ./build/libs/app.jar ./rr
+                    ./build/libs/app.jar ./rr

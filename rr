@@ -1,12 +1,13 @@
 #!/bin/bash
 BINARY_PATH=/usr/local/bin/rr.jar
 DOWNLOAD_URL=https://github.com/navikt/bomlo-cli/releases/latest/download/app.jar
+EXIT_CODE_UPDATED_VERSION=10
 if ! test -f $BINARY_PATH; then
     echo "Downloading latest version"
     curl -fsLo - $DOWNLOAD_URL > $BINARY_PATH
 else
-    java -jar app.jar $1 check_version --download /tmp/rr-updated.jar
-    if test $? -eq 10; then
+    java -jar $BINARY_PATH $1 check_version --download /tmp/rr-updated.jar
+    if test $? -eq $EXIT_CODE_UPDATED_VERSION; then
         echo "New version was downloaded"
         mv /tmp/rr-updated.jar $BINARY_PATH
     fi

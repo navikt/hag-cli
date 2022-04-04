@@ -20,6 +20,7 @@ private val commands = listOf<Command>(
     TraceCommand(),
     FollowCommand(),
     FollowTopicCommand(),
+    FollowEventCommand(),
     CheckVersionCommand()
 )
 

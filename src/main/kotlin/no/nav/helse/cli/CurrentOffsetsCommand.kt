@@ -11,6 +11,7 @@ internal class CurrentOffsetsCommand : Command {
 
     override fun usage() {
         println("Usage: $name <comma-separated consumer groups>")
+        println("Prints the current committed offsets for the given consumer groups (across all topics/partitions)")
     }
 
     override fun execute(factory: ConsumerProducerFactory, args: List<String>) {

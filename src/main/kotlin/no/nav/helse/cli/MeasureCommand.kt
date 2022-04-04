@@ -24,6 +24,7 @@ internal class MeasureCommand : Command {
 
     override fun usage() {
         println("Usage: $name <topic> <from timestamp>")
+        println("Reads the topic from the given timestamp and until the end, then prints out statistics about each event type (occurrence and total byte size)")
     }
 
     override fun execute(factory: ConsumerProducerFactory, args: List<String>) {

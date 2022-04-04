@@ -1,7 +1,5 @@
 package no.nav.helse.cli
 
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.rapids_and_rivers.cli.ConsumerProducerFactory
 import no.nav.rapids_and_rivers.cli.JsonRiver
 import no.nav.rapids_and_rivers.cli.RapidsCliApplication
@@ -12,6 +10,7 @@ internal class FollowCommand : Command {
 
     override fun usage() {
         println("Usage: $name <topic> <fnr>")
+        println("Prints all messages that contains the given FNR")
     }
 
     override fun execute(factory: ConsumerProducerFactory, args: List<String>) {

@@ -22,6 +22,8 @@ internal class ObserveCommand : Command, JsonRiver.JsonValidationSuccessListener
 
     override fun usage() {
         println("Usage: $name <topic>")
+        println("Consumes the topic and prints statistics about occurrence of each event type.")
+        println("Reads from topic until stopped.")
     }
 
     override fun execute(factory: ConsumerProducerFactory, args: List<String>) {

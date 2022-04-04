@@ -13,6 +13,7 @@ internal class ProduceCommand : Command {
 
     override fun usage() {
         println("Usage: $name <topic> <kafka record key> <path to json file>")
+        println("Produces a message onto the topic with the given key and json file.")
     }
 
     override fun execute(factory: ConsumerProducerFactory, args: List<String>) {

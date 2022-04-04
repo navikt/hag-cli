@@ -8,6 +8,7 @@ internal class CurrentPartitionsCommand : Command {
 
     override fun usage() {
         println("Usage: $name <comma-separated consumer groups>")
+        println("Prints assigned partitions for each member of the given consumer groups")
     }
 
     override fun execute(factory: ConsumerProducerFactory, args: List<String>) {

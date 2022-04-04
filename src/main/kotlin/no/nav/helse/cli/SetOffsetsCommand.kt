@@ -14,6 +14,7 @@ internal class SetOffsetsCommand : Command {
 
     override fun usage() {
         println("Usage: $name <consumer group> <topic>")
+        println("Manually sets offsets for a consumer group")
     }
 
     override fun execute(factory: ConsumerProducerFactory, args: List<String>) {

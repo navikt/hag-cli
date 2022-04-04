@@ -10,6 +10,7 @@ internal class FollowTopicCommand : Command {
 
     override fun usage() {
         println("Usage: $name <topic>")
+        println("Prints all messages from a topic")
     }
 
     override fun execute(factory: ConsumerProducerFactory, args: List<String>) {

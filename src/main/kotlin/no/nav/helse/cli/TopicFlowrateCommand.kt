@@ -1,10 +1,8 @@
 package no.nav.helse.cli
 
-import no.nav.helse.cli.operations.getOffsets
 import no.nav.rapids_and_rivers.cli.ConsumerProducerFactory
 import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.admin.OffsetSpec
-import org.apache.kafka.clients.consumer.OffsetAndMetadata
 import org.apache.kafka.common.TopicPartition
 import java.lang.Thread.sleep
 import kotlin.math.round
@@ -15,6 +13,8 @@ internal class TopicFlowrateCommand : Command {
 
     override fun usage() {
         println("Usage: $name <comma-separated topics>")
+        println("Calculates a flowrate for each topic. The flow rate is calculated using the committed offsets as a basis ")
+        println("for how many messages are being produced on each topic.")
     }
 
     override fun execute(factory: ConsumerProducerFactory, args: List<String>) {

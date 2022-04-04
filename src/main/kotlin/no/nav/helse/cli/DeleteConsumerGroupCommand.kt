@@ -8,6 +8,7 @@ internal class DeleteConsumerGroupCommand : Command {
 
     override fun usage() {
         println("Usage: $name <consumer group> [optional topic]")
+        println("Deletes a consumer group and all of its committed offsets")
     }
 
     override fun execute(factory: ConsumerProducerFactory, args: List<String>) {

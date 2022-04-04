@@ -14,6 +14,8 @@ internal class FlowrateCommand : Command {
 
     override fun usage() {
         println("Usage: $name <comma-separated consumer groups>")
+        println("Calculates a flowrate for each consumer group. The flow rate is calculated using the committed offsets as a basis ")
+        println("for how many messages each consumer group is processing.")
     }
 
     override fun execute(factory: ConsumerProducerFactory, args: List<String>) {

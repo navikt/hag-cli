@@ -9,14 +9,14 @@ internal class FollowEventCommand : Command {
     override val name = "follow_event"
 
     override fun usage() {
-        println("Usage: $name <topic> <event_name>")
+        println("Usage: $name <topic> <comma-separated list of event_name>")
         println("Prints all events matching the given type")
     }
 
     override fun execute(factory: ConsumerProducerFactory, args: List<String>) {
         if (args.size < 2) throw RuntimeException("Missing required topic or timestamp arg")
         val topic = args[0]
-        val eventName = args[1]
+        val eventNames = args[1].split(",")
         val groupId = "bomli-cli-${Random.nextInt()}"
 
         println("Consuming from $topic with consumer group $groupId")
@@ -24,7 +24,7 @@ internal class FollowEventCommand : Command {
         RapidsCliApplication(factory)
             .apply {
                 JsonRiver(this)
-                    .validate { _, node, _ -> node.path("@event_name").asText() == eventName }
+                    .validate { _, node, _ -> node.path("@event_name").asText() in eventNames }
                     .onMessage { record, node ->
                         println("#${record.partition()}, offset ${record.offset()} - ${node.path("@id").asText()} --> $node")
                     }

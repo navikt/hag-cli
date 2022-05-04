@@ -11,10 +11,15 @@ curl -fsLo /usr/local/bin/rr https://github.com/navikt/bomlo-cli/releases/latest
 
 ### 2. Hente secrets og generere config
 
-Finn navn på minst prod-secret, og eventuelt en dev-secret, og kjør kommandoen nedenfor:
-
+Finn navn på en aiven-secret fra prod-gcp
 ```shell
-./fetch-keystores.sh name-of-prod-secret optional-name-of-dev-secret
+kubectl get secret | grep aiven-
+```
+Gjenta eventuelt for dev-gcp.
+
+Kjør kommandoen:
+```shell
+./fetch-keystores.sh <name-of-prod-secret> <optional-name-of-dev-secret>
 ```
 
 Det lages automatisk en fil kalt `config/prod-aiven.properties` og `config/dev-aiven.properties`.

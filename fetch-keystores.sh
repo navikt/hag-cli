@@ -6,6 +6,11 @@ KEYTSTORE_DEV_NAME=aiven-dev-keystore.p12
 TRUSTORE_DEV_NAME=aiven-dev-truststore.jks
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+alias k=kubectl
+function kx() {
+    k config use-context $1
+}
+
 function checkKeystore() {
   if ! keytool -list -v -keystore "$1" -storepass changeme -storetype PKCS12 > /dev/null;
   then

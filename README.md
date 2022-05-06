@@ -225,9 +225,15 @@ hendelse_ikke_håndtert                     : 403 messages, summing to 0 MB
 
 ### Trace en melding
 
+Man kan se alle etterfølgende meldinger for en gitt melding ved å oppgi dens `@id`:
+
+Parametere:
+- dybde
+- starttidspunkt - default søker den to timer tilbake
+
 ````shell
 % java -jar build/libs/app.jar \
-  config/prod-aiven.properties trace <topic> <message ID>
+  config/prod-aiven.properties trace <topic> <@id>
 
 Found message at partition=12, offset = 32551218
 Whole topic read, exiting

@@ -10,8 +10,13 @@ curl -fsLo /usr/local/bin/rr https://github.com/navikt/bomlo-cli/releases/latest
 ```
 
 ### 2. Hente secrets og generere config
+Verktøyet trenger credentials mot Kafka-clusteret for å kunne utføre kommandoer, til dette brukes sertifikater.
 
-Finn navn på en aiven-secret fra prod-gcp
+Skriptet som henter sertifikater krever navnet på en prod-secret og henter også sertifikater for dev hvis man angir
+navnet på en dev-secret.
+
+
+Finn navn på en aiven-secret fra prod-gcp:
 ```shell
 kubectl get secret | grep aiven-
 ```
@@ -22,9 +27,15 @@ Kjør kommandoen:
 ./fetch-keystores.sh <name-of-prod-secret> <optional-name-of-dev-secret>
 ```
 
-Det lages automatisk en fil kalt `config/prod-aiven.properties` og `config/dev-aiven.properties`.
+Det lages automatisk en fil kalt `config/prod-aiven.properties`, og eventuelt en `config/dev-aiven.properties`.
 
-### 3. Kjøre
+
+### 3. Koble opp mot naisdevice-gateway `aiven-prod`
+
+Selv om foregående kommandoer for å liste og hente secrets fungerer fint uten denne er selve CLI-ets kommandoer
+avhengige av den.
+
+### 4. Kjøre kommandoer
 
 `rr` vil automatisk sjekke, og evt. laste ned, ny versjon av CLI-et.
 

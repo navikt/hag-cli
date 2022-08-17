@@ -291,7 +291,7 @@ Whole topic read, exiting
 
 ````shell
 % java -jar build/libs/app.jar \
-  config/prod-aiven.properties follow <topic> <event_name>
+  config/prod-aiven.properties follow_event <topic> <event_name>
 
 #3, offset 7403511 - pong:  --> {"@event_name":"pong", …
 #5, offset 7403512 - pong:  --> {"@event_name":"pong",…

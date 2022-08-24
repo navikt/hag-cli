@@ -18,7 +18,7 @@ navnet på en dev-secret.
 
 Finn navn på en aiven-secret fra prod-gcp:
 ```shell
-kubectl get secret | grep aiven-
+kubectl get secret -n=tbd | grep aiven-
 ```
 Gjenta eventuelt for dev-gcp.
 

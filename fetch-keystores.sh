@@ -15,18 +15,18 @@ function checkKeystore() {
   if ! keytool -list -v -keystore "$1" -storepass changeme -storetype PKCS12 > /dev/null;
   then
       echo Keystore is corrupt, or bad password
-      exit 1
+  else
+      echo Keystore $1 seem to be ok ...
   fi
-  echo Keystore $1 seem to be ok ...
 }
 
 function checkTruststore() {
   if ! keytool -list -v -keystore "$1" -storepass changeme > /dev/null;
   then
       echo Truststore is corrupt, or bad password
-      exit 1
+  else
+  	echo Trustore $1 seem to be ok ...
   fi
-  echo Trustore $1 seem to be ok ...
 }
 
 function getSecrets() {

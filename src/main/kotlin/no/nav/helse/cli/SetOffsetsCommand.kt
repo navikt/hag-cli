@@ -3,10 +3,12 @@ package no.nav.helse.cli
 import no.nav.helse.cli.operations.getOffsets
 import no.nav.helse.cli.operations.getPartitions
 import no.nav.rapids_and_rivers.cli.ConsumerProducerFactory
+import no.nav.rapids_and_rivers.cli.RapidsCliApplication
 import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.consumer.OffsetAndMetadata
 import org.apache.kafka.common.TopicPartition
 import java.time.LocalDateTime
+import kotlin.random.Random
 import kotlin.system.exitProcess
 
 internal class SetOffsetsCommand : Command {
@@ -27,13 +29,33 @@ internal class SetOffsetsCommand : Command {
         val currentOffsets = getOffsets(client, listOf(consumerGroup))
 
         println("$topic consists of ${partitions.size} partitions.")
-        println("Enter a new offset for each partition, or leave blank to leave unaltered")
+        println("Enter a new offset for each partition, leave blank to leave unaltered, type 'E' for EARLIEST or type 'L' for LATEST")
+
+        val groupId = "bomli-cli-${Random.nextInt()}"
+        val app = RapidsCliApplication(factory)
+
+        val startOffsets = mutableMapOf<TopicPartition, Long>()
+        val endOffsets = mutableMapOf<TopicPartition, Long>()
+        app.start(groupId, listOf(topic)) { consumer ->
+            startOffsets.putAll(consumer.beginningOffsets(partitions))
+            endOffsets.putAll(consumer.endOffsets(partitions))
+            app.stop()
+        }
 
         val offsets = partitions.mapNotNull { partition ->
-            print("Enter a new offset for partition#${partition.partition()} (current is: ${currentOffsets[consumerGroup]?.get(partition)?.offset()}): ")
-            readln().takeUnless { it.isBlank() }?.toLongOrNull()?.let {
-                partition to it
+            val earliest = startOffsets.getValue(partition)
+            val latest = endOffsets.getValue(partition)
+            val current = currentOffsets[consumerGroup]?.get(partition)?.offset()
+            print("Enter a new offset for partition#${partition.partition()} (current is: $current, earliest is $earliest, latest is $latest): ")
+
+            val output = readln().takeUnless { it.isBlank() }?.let { input ->
+                input.toLongOrNull() ?: when (input.first()) {
+                    'E' -> earliest
+                    'L' -> latest
+                    else -> null
+                }
             }
+            output?.let { partition to it }
         }
         if (offsets.isEmpty()) return println("No changes")
 

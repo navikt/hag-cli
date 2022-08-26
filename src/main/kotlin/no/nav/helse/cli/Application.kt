@@ -21,7 +21,8 @@ private val commands = listOf<Command>(
     FollowCommand(),
     FollowTopicCommand(),
     FollowEventCommand(),
-    CheckVersionCommand()
+    CheckVersionCommand(),
+    ConsumeCommand()
 )
 
 fun main(args: Array<String>) {

@@ -298,6 +298,17 @@ Whole topic read, exiting
 …
 ````
 
+### Følge meldinger av en type, fra et bestemt tidspunkt, og søke etter evt. tekst
+
+````shell
+% java -jar build/libs/app.jar \
+  config/prod-aiven.properties consume <topic> <event_name> [<optional localdatetime timestamp>, [<optional search string>]]
+
+#3, offset 7403511 - pong:  --> {"@event_name":"pong", …
+#5, offset 7403512 - pong:  --> {"@event_name":"pong",…
+…
+````
+
 ## Henvendelser
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub.
 

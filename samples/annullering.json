@@ -1,0 +1,21 @@
+{
+    "@event_name": "annullering",
+    "fødselsnummer": "{fnr går her}",
+    "organisasjonsnummer": "{orgnummer går her}",
+    "aktørId": "{aktørID går her}",
+    "saksbehandler": {
+        "epostaddresse": "Sakbehandler.Epost@nav.no {viktig med store forbokstaver}",
+        "oid": "{saksbehandlers object id fra portal.azure.com}",
+        "navn": "{Saksbehandlers navn, etternavn først}",
+        "ident": "{saksbehandlers _lange_ ident, fra portal.azure.com -> Active Directory -> Users -> Properties -> On-premises SAM account name}"
+    },
+    "fagsystemId": "{FagsystemID til utbetalingen som skal annulleres, må av historiske årsaker være ArbeidsgiverOppdrag.fagsystemID}",
+    "begrunnelser": [
+        "{begrunnelse}"
+    ],
+    "gjelderSisteSkjæringstidspunkt": true,
+    "@id": "{autogenerert UUID (i lowercase?)}",
+    "@opprettet": "2023-01-01T11:11:00.000000000",
+    "system_read_count": 1,
+    "system_participating_services": []
+}

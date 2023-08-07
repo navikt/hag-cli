@@ -12,15 +12,15 @@ curl -fsLo /usr/local/bin/rr https://github.com/navikt/bomlo-cli/releases/latest
 ### 2. Hente secrets og generere config
 Verktøyet trenger credentials mot Kafka-clusteret for å kunne utføre kommandoer, til dette brukes sertifikater.
 
-Skriptet som henter sertifikater krever navnet på en prod-secret og henter også sertifikater for dev hvis man angir
-navnet på en dev-secret.
+Skriptet som henter sertifikater krever navnet på en secret i prod-gcp, og henter også sertifikater for dev hvis man angir
+navnet på en secret i dev-gcp.
 
 
-Finn navn på en aiven-secret fra prod-gcp:
+Finn navn på en aiven-secret fra **prod-gcp**:
 ```shell
 kubectl get secret -n=tbd | grep aiven-
 ```
-Gjenta eventuelt for dev-gcp.
+Gjenta eventuelt for **dev-gcp**.
 
 Kjør kommandoen:
 ```shell
@@ -99,7 +99,7 @@ java -jar build/libs/app.jar \
 ### Printe ut flowrate for consumer-grupper:
 
 ```shell
-% java -jar build/libs/app.jar \
+java -jar build/libs/app.jar \
   config/prod-aiven.properties flowrate tbd-spleis-v1,tbd-spesialist-v1
 
 tbd-spesialist-v1:   10 msgs/s [max:  228 msgs/s, avg:   23 msgs/s], tbd-spleis-v1:   41 msgs/s [max:   66 msgs/s, avg:   25 msgs/s]
@@ -108,7 +108,7 @@ tbd-spesialist-v1:   10 msgs/s [max:  228 msgs/s, avg:   23 msgs/s], tbd-spleis-
 ### Printe ut flowrate for topics:
 
 ```shell
-% java -jar build/libs/app.jar \
+java -jar build/libs/app.jar \
   config/prod-aiven.properties topic_flowrate tbd.rapid.v1
 
 tbd-spleis-v1:  160 msgs/s [max:  436 msgs/s, avg:   37 msgs/s]
@@ -117,13 +117,13 @@ tbd-spleis-v1:  160 msgs/s [max:  436 msgs/s, avg:   37 msgs/s]
 ### Sette offsets manuelt:
 
 ```shell
-% java -jar build/libs/app.jar \
+java -jar build/libs/app.jar \
   config/prod-aiven.properties set_offsets tbd-spleis-v1 tbd.rapid.v1
 ```
 
 ### Produce melding på topic:
 ```shell
-% java -jar build/libs/app.jar \
+java -jar build/libs/app.jar \
   config/prod-aiven.properties produce tbd.rapid.v1 <record key> <path to file.json>
 
 ====================================================
@@ -133,7 +133,7 @@ Record produced to partition #5 with offset 7230180
 
 ### Slette en consumergruppe:
 ```shell
-% java -jar build/libs/app.jar \
+java -jar build/libs/app.jar \
   config/prod-aiven.properties delete_consumer_group <consumer group> [optional topic name]
 
 ====================================================
@@ -144,7 +144,7 @@ Consumer group tbd-spangre-utsettelser-v1 deleted
 
 ### Liste alle consumers av en topic:
 ```shell
-% java -jar build/libs/app.jar \
+java -jar build/libs/app.jar \
   config/prod-aiven.properties consumers <topic name>
 
 Consumers of topic tbd.rapid.v1
@@ -160,7 +160,7 @@ Consumers of topic tbd.rapid.v1
 
 ### Observere events på topic
 ```shell
-% java -jar build/libs/app.jar \
+java -jar build/libs/app.jar \
   config/prod-aiven.properties observe <topic name>
 
 behov                                       : 1378
@@ -207,7 +207,7 @@ behov_uten_fullstendig_løsning              : 1
 ### Måle antall events (og totalstørrelse) innenfor et tidsvindu
 
 ````shell
-% java -jar build/libs/app.jar \
+java -jar build/libs/app.jar \
   config/prod-aiven.properties measure tbd.rapid.v1 2022-03-26T06:00:00
 
 Consuming messages … [==================================================>] 100.0 %
@@ -243,7 +243,7 @@ Parametere:
 - starttidspunkt - default søker den to timer tilbake
 
 ````shell
-% java -jar build/libs/app.jar \
+java -jar build/libs/app.jar \
   config/prod-aiven.properties trace <topic> <@id>
 
 Found message at partition=12, offset = 32551218
@@ -268,7 +268,7 @@ Whole topic read, exiting
 ### Følge meldinger på en topic
 
 ````shell
-% java -jar build/libs/app.jar \
+java -jar build/libs/app.jar \
   config/prod-aiven.properties follow_topic <topic>
 
 #3, offset 7403511 - påminnelse:  --> {"@event_name":"påminnelse", …
@@ -279,7 +279,7 @@ Whole topic read, exiting
 ### Følge meldinger for en person på en topic
 
 ````shell
-% java -jar build/libs/app.jar \
+java -jar build/libs/app.jar \
   config/prod-aiven.properties follow <topic> <fnr>
 
 #3, offset 7403511 - ny_søknad:  --> {"@event_name":"ny_søknad", …
@@ -290,7 +290,7 @@ Whole topic read, exiting
 ### Følge meldinger av en type
 
 ````shell
-% java -jar build/libs/app.jar \
+java -jar build/libs/app.jar \
   config/prod-aiven.properties follow_event <topic> <event_name>
 
 #3, offset 7403511 - pong:  --> {"@event_name":"pong", …
@@ -301,7 +301,7 @@ Whole topic read, exiting
 ### Følge meldinger av en type, fra et bestemt tidspunkt, og søke etter evt. tekst
 
 ````shell
-% java -jar build/libs/app.jar \
+java -jar build/libs/app.jar \
   config/prod-aiven.properties consume <topic> <event_name> [<optional localdatetime timestamp>, [<optional search string>]]
 
 #3, offset 7403511 - pong:  --> {"@event_name":"pong", …

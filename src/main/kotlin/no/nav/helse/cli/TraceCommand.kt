@@ -1,8 +1,6 @@
 package no.nav.helse.cli
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.cli.operations.findOffsets
 import no.nav.helse.cli.operations.getPartitions
 import no.nav.rapids_and_rivers.cli.ConsumerProducerFactory
@@ -26,7 +24,7 @@ internal class TraceCommand : Command {
     override fun usage() {
         println("Usage: $name <topic> <id> [<depth>] [<from timestamp>]")
         println("If <depth> is unset, the default is to trace a message with depth=$DEFAULT_DEPTH")
-        println("If <from timestamp> is unset, the default is to look back last two hours")
+        println("If <from timestamp> is unset, the default is to look back last two hours. Format is ISO 8601 datetime")
     }
 
     override fun execute(factory: ConsumerProducerFactory, args: List<String>) {
@@ -130,14 +128,14 @@ internal class TraceCommand : Command {
             else -> behov
         }
 
-        internal fun erBarnAv(otherId: String, depth: Int): Boolean {
+        fun erBarnAv(otherId: String, depth: Int): Boolean {
             if (depth < 0) return false
             if (this.id == otherId) return true
             if (matchAgainstSaksbehandlerløsningOrOppgave(otherId)) return true // weirdness for matching Godkjenning-solution against saksbehandler_løsning
             return children.any { it.erBarnAv(otherId, depth - 1) }
         }
 
-        internal fun leggTil(parentId: String, message: Message): Boolean {
+        fun leggTil(parentId: String, message: Message): Boolean {
             if (this.id == parentId) return add(message)
             if (children.reversed().any { it.leggTil(parentId, message) }) {
                 message.parents.add(0, this)

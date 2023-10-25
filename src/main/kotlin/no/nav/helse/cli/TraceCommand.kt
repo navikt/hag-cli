@@ -63,6 +63,7 @@ internal class TraceCommand : Command {
                         true == rootMessage?.erBarnAv(node.path("@forårsaket_av").path("id").asText(), depth)
                             || true == rootMessage?.erBarnAv(node.path("@id").asText(), depth)
                             || (node.path("@event_name").asText() in setOf("oppgave_opprettet", "saksbehandler_løsning") && true == rootMessage?.erBarnAv(node.path("hendelseId").asText(), depth))
+                            || (node.path("@event_name").asText() == "behov" && true == rootMessage?.erBarnAv(node.path("@behovId").asText(), depth))
 
                     }
                     .onMessage { record, node ->
@@ -132,6 +133,9 @@ internal class TraceCommand : Command {
             if (depth < 0) return false
             if (this.id == otherId) return true
             if (matchAgainstSaksbehandlerløsningOrOppgave(otherId)) return true // weirdness for matching Godkjenning-solution against saksbehandler_løsning
+            if (matchAgainstUtbetalingsbehov(otherId)) return true.also {
+                val a = 1
+            }
             return children.any { it.erBarnAv(otherId, depth - 1) }
         }
 
@@ -143,6 +147,8 @@ internal class TraceCommand : Command {
             }
             if (matchAgainstSaksbehandlerløsningOrOppgave(message.id)) return add(message) // weirdness for matching Godkjenning-solution against saksbehandler_løsning
             if (message.matchAgainstSaksbehandlerløsningOrOppgave(this.id)) return add(message) // weirdness for matching saksbehandler_løsning against Godkjenning-need
+            if (matchAgainstUtbetalingsbehov(message.node.path("@behovId").asText())) return add(message)
+            if (message.matchAgainstUtbetalingsbehov(this.node.path("@behovId").asText())) return add(message)
             return false
         }
 
@@ -153,6 +159,9 @@ internal class TraceCommand : Command {
 
         private fun matchAgainstSaksbehandlerløsningOrOppgave(id: String) =
             this.eventName in setOf("oppgave_opprettet", "saksbehandler_løsning") && id == this.node.path("hendelseId").asText()
+
+        private fun matchAgainstUtbetalingsbehov(id: String) =
+            this.eventName == "Utbetaling" && id == this.node.path("@behovId").asText()
 
         private fun decode(): String {
             val sb = StringBuilder()

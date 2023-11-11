@@ -96,6 +96,15 @@ java -jar build/libs/app.jar \
   config/prod-aiven.properties current_offsets tbd-spleis-v1
 ```
 
+### Printe ut offsets for alle partisjoner på et gitt tidspunkt:
+
+```shell
+java -jar build/libs/app.jar \
+  config/prod-aiven.properties offsets tbd-spleis-v1 <localdatetime string>
+```
+
+`<localdatetime string>` er noe som `LocalDateTime` kan parse, eksempel: `2023-10-10T23:12:13`
+
 ### Printe ut flowrate for consumer-grupper:
 
 ```shell

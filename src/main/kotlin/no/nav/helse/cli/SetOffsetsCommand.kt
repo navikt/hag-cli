@@ -50,8 +50,8 @@ internal class SetOffsetsCommand : Command {
 
             val output = readln().takeUnless { it.isBlank() }?.let { input ->
                 input.toLongOrNull() ?: when (input.first()) {
-                    'E' -> earliest
-                    'L' -> latest
+                    'E', 'e' -> earliest
+                    'L', 'l' -> latest
                     else -> null
                 }
             }

@@ -8,7 +8,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 alias k=kubectl
 function kx() {
-    k config use-context $1
+    k config use-context "$1"
 }
 
 function checkKeystore() {
@@ -16,7 +16,7 @@ function checkKeystore() {
   then
       echo Keystore is corrupt, or bad password
   else
-      echo Keystore $1 seem to be ok ...
+      echo Keystore "$1" seem to be ok ...
   fi
 }
 
@@ -25,7 +25,7 @@ function checkTruststore() {
   then
       echo Truststore is corrupt, or bad password
   else
-  	echo Trustore $1 seem to be ok ...
+  	echo Trustore "$1" seem to be ok ...
   fi
 }
 
@@ -38,12 +38,14 @@ function getSecrets() {
     checkTruststore "$3"
 
     echo "Writing properties to $4"
-    echo "config = aiven" > "$4"
-    echo "aiven.brokers.url = $BROKERS" >> "$4"
-    echo "aiven.truststore.path = $(pwd)/$3" >> "$4"
-    echo "aiven.truststore.password = changeme" >> "$4"
-    echo "aiven.keystore.path = $(pwd)/$2" >> "$4"
-    echo "aiven.keystore.password = changeme" >> "$4"
+    {
+        echo "config = aiven"
+        echo "aiven.brokers.url = $BROKERS"
+        echo "aiven.truststore.path = $(pwd)/$3"
+        echo "aiven.truststore.password = changeme"
+        echo "aiven.keystore.path = $(pwd)/$2"
+        echo "aiven.keystore.password = changeme"
+    } > "$4"
 }
 
 if test "$#" -eq 0; then
@@ -53,9 +55,9 @@ if test "$#" -eq 0; then
 fi
 
 kx prod-gcp
-getSecrets $1 $KEYTSTORE_PROD_NAME $TRUSTORE_PROD_NAME "$SCRIPT_DIR/config/prod-aiven.properties"
+getSecrets "$1" $KEYTSTORE_PROD_NAME $TRUSTORE_PROD_NAME "$SCRIPT_DIR/config/prod-aiven.properties"
 
 if ! test -z "$2"; then
     kx dev-gcp
-    getSecrets $2 $KEYTSTORE_DEV_NAME $TRUSTORE_DEV_NAME "$SCRIPT_DIR/config/dev-aiven.properties"
+    getSecrets "$2" $KEYTSTORE_DEV_NAME $TRUSTORE_DEV_NAME "$SCRIPT_DIR/config/dev-aiven.properties"
 fi

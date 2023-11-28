@@ -30,22 +30,26 @@ function checkTruststore() {
 }
 
 function getSecrets() {
-    BROKERS=$(k get secret "$1" -n tbd -o jsonpath='{.data.KAFKA_BROKERS}' | base64 -D)
+    local -r secretToGet=$1
+    local -r keystoreName=$2
+    local -r truststoreName=$3
+    local -r filename=$4
+    BROKERS=$(k get secret "$secretToGet" -n tbd -o jsonpath='{.data.KAFKA_BROKERS}' | base64 -D)
     echo "Brokers: $BROKERS"
-    k get secret "$1" -n tbd -o jsonpath='{.data.client\.keystore\.p12}' | tee "$2.base64" | base64 -D > "$2"
-    k get secret "$1" -n tbd -o jsonpath='{.data.client\.truststore\.jks}' | tee "$3.base64" | base64 -D > "$3"
-    checkKeystore "$2"
-    checkTruststore "$3"
+    k get secret "$secretToGet" -n tbd -o jsonpath='{.data.client\.keystore\.p12}' | tee "$keystoreName.base64" | base64 -D > "$keystoreName"
+    k get secret "$secretToGet" -n tbd -o jsonpath='{.data.client\.truststore\.jks}' | tee "$truststoreName.base64" | base64 -D > "$truststoreName"
+    checkKeystore "$keystoreName"
+    checkTruststore "$truststoreName"
 
-    echo "Writing properties to $4"
+    echo "Writing properties to $filename"
     {
         echo "config = aiven"
         echo "aiven.brokers.url = $BROKERS"
-        echo "aiven.truststore.path = $(pwd)/$3"
+        echo "aiven.truststore.path = $(pwd)/$truststoreName"
         echo "aiven.truststore.password = changeme"
-        echo "aiven.keystore.path = $(pwd)/$2"
+        echo "aiven.keystore.path = $(pwd)/$keystoreName"
         echo "aiven.keystore.password = changeme"
-    } > "$4"
+    } > "$filename"
 }
 
 if test "$#" -eq 0; then

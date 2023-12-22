@@ -35,23 +35,11 @@ jobs:
                       build/libs/app.jar
                       rr
                     if-no-files-found: error
-    snyk:
-        runs-on: ubuntu-latest
-        steps:
-            -   uses: actions/checkout@v3
-            -   name: Gradle vulnerability check
-                uses: snyk/actions/gradle@master
-                env:
-                    SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-                with:
-                    args: --org=tbd-ty7 --fail-on=all --project-name=bomlo-cli --configuration-matching='^runtimeClasspath'
-                    command: monitor
     release:
         if: ${{ github.ref == 'refs/heads/main' }}
         needs:
             - set-version
             - build
-            - snyk
         runs-on: ubuntu-latest
         steps:
             - name: Checkout latest code

@@ -23,10 +23,12 @@ jobs:
             -   uses: actions/setup-java@v4
                 with:
                     distribution: 'temurin'
-                    java-version: '17.x'
+                    java-version: '21.x'
                     cache: 'gradle'
             -   name: test and build
                 run: ./gradlew build -Pversion=${{ needs.set-version.outputs.version }} -Prepository=${{ github.repository }}
+                env:
+                    ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
             -   name: upload dist
                 uses: actions/upload-artifact@v3
                 with:

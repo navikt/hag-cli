@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.9.22"
 }
 
 buildscript {
@@ -9,11 +9,23 @@ buildscript {
 }
 
 repositories {
+    val githubPassword: String? by project
     mavenCentral()
-    maven("https://jitpack.io")
+    /* ihht. https://github.com/navikt/utvikling/blob/main/docs/teknisk/Konsumere%20biblioteker%20fra%20Github%20Package%20Registry.md
+        så plasseres github-maven-repo (med autentisering) før nav-mirror slik at github actions kan anvende førstnevnte.
+        Det er fordi nav-mirroret kjører i Google Cloud og da ville man ellers fått unødvendige utgifter til datatrafikk mellom Google Cloud og GitHub
+     */
+    maven {
+        url = uri("https://maven.pkg.github.com/navikt/maven-release")
+        credentials {
+            username = "x-access-token"
+            password = githubPassword
+        }
+    }
+    maven("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
 }
 
-val rapidsAndRiversCli = "1.94f5da1"
+val rapidsAndRiversCli = "1.24cf512"
 val junitJupiterVersion = "5.10.2"
 
 dependencies {
@@ -26,10 +38,10 @@ dependencies {
 
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = "21"
     }
     compileTestKotlin {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = "21"
     }
 
     named<Jar>("jar") {
@@ -62,6 +74,6 @@ tasks {
     }
 
     withType<Wrapper> {
-        gradleVersion = "7.4.1"
+        gradleVersion = "8.5"
     }
 }

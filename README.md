@@ -127,6 +127,13 @@ tbd-spleis-v1:  160 msgs/s [max:  436 msgs/s, avg:   37 msgs/s]
 
 ```shell
 java -jar build/libs/app.jar \
+  config/prod-aiven.properties set_offsets <consumer group> <topic name>
+```
+
+for eksempel slik:
+
+```shell
+java -jar build/libs/app.jar \
   config/prod-aiven.properties set_offsets tbd-spleis-v1 tbd.rapid.v1
 ```
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 BINARY_PATH=/usr/local/bin/rr.jar
-DOWNLOAD_URL=https://github.com/navikt/bomlo-cli/releases/latest/download/app.jar
+DOWNLOAD_URL=https://github.com/navikt/hag-cli/releases/latest/download/app.jar
 EXIT_CODE_UPDATED_VERSION=10
 if ! test -f $BINARY_PATH; then
     echo "Downloading latest version"

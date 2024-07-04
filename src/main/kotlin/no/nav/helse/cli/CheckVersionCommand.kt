@@ -12,7 +12,7 @@ import kotlin.system.exitProcess
 
 internal class CheckVersionCommand : Command {
     private companion object {
-        private const val REPO = "navikt/bomlo-cli"
+        private const val REPO = "navikt/hag-cli"
         private val mapper = jacksonObjectMapper()
         // velg en exitkode som bash-script kan forvente betyr at
         // versjonen er utdatert. Bør ikke være 0 og 1 ettersom de er i bruk fra før

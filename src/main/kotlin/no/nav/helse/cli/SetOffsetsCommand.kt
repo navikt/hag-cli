@@ -31,7 +31,7 @@ internal class SetOffsetsCommand : Command {
         println("$topic consists of ${partitions.size} partitions.")
         println("Enter a new offset for each partition, leave blank to leave unaltered, type 'E' for EARLIEST or type 'L' for LATEST")
 
-        val groupId = "bomli-cli-${Random.nextInt()}"
+        val groupId = "hag-cli-${Random.nextInt()}"
         val app = RapidsCliApplication(factory)
 
         val startOffsets = mutableMapOf<TopicPartition, Long>()

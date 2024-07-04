@@ -32,7 +32,7 @@ internal class MeasureCommand : Command {
         val topic = args[0]
         val time = LocalDateTime.parse(args[1])
         val timestamp = time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-        val groupId = "bomli-cli-${Random.nextInt()}"
+        val groupId = "hag-cli-${Random.nextInt()}"
 
         println("Consuming from $topic with consumer group $groupId")
         println("Will NOT be committing any offsets. Starting from $time with timestamp = $timestamp")

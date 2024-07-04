@@ -34,7 +34,7 @@ internal class TraceCommand : Command {
         val depth = args.getOrNull(2)?.toIntOrNull() ?: DEFAULT_DEPTH
         val time = args.getOrNull(3)?.let { LocalDateTime.parse(it) } ?: LocalDateTime.now().minusHours(2)
         val timestamp = time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-        val groupId = "bomli-cli-${Random.nextInt()}"
+        val groupId = "hag-cli-${Random.nextInt()}"
 
         println("Consuming from $topic with consumer group $groupId")
         println("Will NOT be committing any offsets. Starting from $time with timestamp = $timestamp")

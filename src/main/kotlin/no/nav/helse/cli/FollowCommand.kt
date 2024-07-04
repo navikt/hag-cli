@@ -17,7 +17,7 @@ internal class FollowCommand : Command {
         if (args.size < 2) throw RuntimeException("Missing required topic or fnr arg")
         val topic = args[0]
         val fnr = args[1]
-        val groupId = "bomli-cli-${Random.nextInt()}"
+        val groupId = "hag-cli-${Random.nextInt()}"
 
         println("Consuming from $topic with consumer group $groupId")
         println("Will NOT be committing any offsets. Starting from LATEST")

@@ -1,12 +1,15 @@
-# Bømlo CLI
+# HAG CLI
 
 OPS-verktøy for å håndtere vanlige use cases.
+
+Dette er HAGs versjon av [Bømlo CLI](https://github.com/navikt/bomlo-cli), og inneholder kun små endringer fra originalen.
+Det vil fremdeles finnes referanser til Bømlo her og der.
 
 ## Installere
 
 ### 1. Laste ned launcher-script:
 ```shell
-curl -fsLo /usr/local/bin/rr https://github.com/navikt/bomlo-cli/releases/latest/download/rr && chmod +x /usr/local/bin/rr
+curl -fsLo /usr/local/bin/rr https://github.com/navikt/hag-cli/releases/latest/download/rr && chmod +x /usr/local/bin/rr
 ```
 
 ### 2. Hente secrets og generere config
@@ -18,7 +21,7 @@ navnet på en secret i dev-gcp.
 
 Finn navn på en aiven-secret fra **prod-gcp**:
 ```shell
-kubectl get secret -n=tbd | grep aiven-
+kubectl get secret -n=helsearbeidsgiver | grep aiven-
 ```
 Gjenta eventuelt for **dev-gcp**.
 
@@ -86,21 +89,21 @@ java -jar build/libs/app.jar \
 
 ```shell
 java -jar build/libs/app.jar \
-  config/prod-aiven.properties current_partitions tbd-spleis-v1,tbd-spesialist-v1
+  config/prod-aiven.properties current_partitions helsearbeidsgiver-im-inntekt-v1,helsearbeidsgiver-im-brreg-v1
 ```
 
 ### Printe ut offsets for consumer-grupper:
 
 ```shell
 java -jar build/libs/app.jar \
-  config/prod-aiven.properties current_offsets tbd-spleis-v1
+  config/prod-aiven.properties current_offsets helsearbeidsgiver-im-inntekt-v1
 ```
 
 ### Printe ut offsets for alle partisjoner på et gitt tidspunkt:
 
 ```shell
 java -jar build/libs/app.jar \
-  config/prod-aiven.properties offsets tbd-spleis-v1 <localdatetime string>
+  config/prod-aiven.properties offsets helsearbeidsgiver.rapid <localdatetime string>
 ```
 
 `<localdatetime string>` er noe som `LocalDateTime` kan parse, eksempel: `2023-10-10T23:12:13`
@@ -109,18 +112,18 @@ java -jar build/libs/app.jar \
 
 ```shell
 java -jar build/libs/app.jar \
-  config/prod-aiven.properties flowrate tbd-spleis-v1,tbd-spesialist-v1
+  config/prod-aiven.properties flowrate helsearbeidsgiver-im-inntekt-v1,helsearbeidsgiver-im-brreg-v1
 
-tbd-spesialist-v1:   10 msgs/s [max:  228 msgs/s, avg:   23 msgs/s], tbd-spleis-v1:   41 msgs/s [max:   66 msgs/s, avg:   25 msgs/s]
+helsearbeidsgiver-im-inntekt-v1:   10 msgs/s [max:  228 msgs/s, avg:   23 msgs/s], helsearbeidsgiver-im-brreg-v1:   41 msgs/s [max:   66 msgs/s, avg:   25 msgs/s]
 ```
 
 ### Printe ut flowrate for topics:
 
 ```shell
 java -jar build/libs/app.jar \
-  config/prod-aiven.properties topic_flowrate tbd.rapid.v1
+  config/prod-aiven.properties topic_flowrate helsearbeidsgiver.rapid
 
-tbd-spleis-v1:  160 msgs/s [max:  436 msgs/s, avg:   37 msgs/s]
+helsearbeidsgiver-im-inntekt-v1:  160 msgs/s [max:  436 msgs/s, avg:   37 msgs/s]
 ```
 
 ### Sette offsets manuelt:
@@ -134,13 +137,13 @@ for eksempel slik:
 
 ```shell
 java -jar build/libs/app.jar \
-  config/prod-aiven.properties set_offsets tbd-spleis-v1 tbd.rapid.v1
+  config/prod-aiven.properties set_offsets helsearbeidsgiver-im-inntekt-v1 helsearbeidsgiver.rapid
 ```
 
 ### Produce melding på topic:
 ```shell
 java -jar build/libs/app.jar \
-  config/prod-aiven.properties produce tbd.rapid.v1 <record key> <path to file.json>
+  config/prod-aiven.properties produce helsearbeidsgiver.rapid <record key> <path to file.json>
 
 ====================================================
 Record produced to partition #5 with offset 7230180
@@ -153,7 +156,7 @@ java -jar build/libs/app.jar \
   config/prod-aiven.properties delete_consumer_group <consumer group> [optional topic name]
 
 ====================================================
-Consumer group tbd-spangre-utsettelser-v1 deleted
+Consumer group helsearbeidsgiver-im-inntekt-v1 deleted
 ====================================================
 ```
 
@@ -163,15 +166,10 @@ Consumer group tbd-spangre-utsettelser-v1 deleted
 java -jar build/libs/app.jar \
   config/prod-aiven.properties consumers <topic name>
 
-Consumers of topic tbd.rapid.v1
-- helserisk-treskeverk-consumer
-- sigmund-consumer
-- spedisjon-v1
-- tbd-behovsakkumulator-v1
-- tbd-spaghet-v1
-- tbd-spammer-v1
-- tbd-spare-v1
-…
+Consumers of topic helsearbeidsgiver.rapid
+- helsearbeidsgiver-im-altinn-v1
+- helsearbeidsgiver-im-brreg-v1
+- helsearbeidsgiver-im-inntekt-v1
 ```
 
 ### Observere events på topic
@@ -179,52 +177,20 @@ Consumers of topic tbd.rapid.v1
 java -jar build/libs/app.jar \
   config/prod-aiven.properties observe <topic name>
 
-behov                                       : 1378
-subsumsjon                                  : 679
-vedtaksperiode_endret                       : 257
-planlagt_påminnelse                         : 257
-vedtaksperiode_tid_i_tilstand               : 210
-infotrygdendring_uten_fnr                   : 165
-pong                                        : 140
-infotrygdendring                            : 110
-påminnelse                                  : 108
-vedtaksperiode_påminnet                     : 108
-utbetaling_endret                           : 59
-ny_søknad                                   : 54
-oppgavestyring_opprett                      : 44
-opprett_oppgave                             : 39
-oppgavestyring_utsatt                       : 37
-inntektsmelding                             : 37
-sendt_søknad_nav                            : 27
-vedtak_fattet                               : 25
-vedtaksperiode_forkastet                    : 25
-oppgavestyring_ferdigbehandlet              : 20
-hendelse_ikke_håndtert                      : 16
-oppgave_oppdatert                           : 14
-vedtaksperiode_godkjent                     : 13
-oppdrag_kvittering                          : 13
-transaksjon_status                          : 13
-utbetaling_utbetalt                         : 13
-sendt_søknad_arbeidsgiver                   : 12
-trenger_ikke_inntektsmelding                : 12
-app_status                                  : 7
-saksbehandler_løsning                       : 6
-oppgave_opprettet                           : 5
-ping                                        : 4
-opprett_oppgave_for_speilsaksbehandlere     : 2
-oppgavestyring_opprett_speilrelatert        : 2
-oppgavestyring_kort_periode                 : 2
-trenger_inntektsmelding                     : 2
-publisert_behov_for_inntektsmelding         : 2
-vedtaksperiode_avvist                       : 2
-behov_uten_fullstendig_løsning              : 1
+SAK_OPPRETT_REQUESTED              : 7
+OPPGAVE_OPPRETT_REQUESTED          : 5
+FORESPØRSEL_MOTTATT                : 1
+FORESPØRSEL_LAGRET                 : 1
+OPPGAVE_LAGRET                     : 1
+SAK_OPPRETTET                      : 1
+TILGANG_FORESPOERSEL_REQUESTED     : 1
 ```
 
 ### Måle antall events (og totalstørrelse) innenfor et tidsvindu
 
 ````shell
 java -jar build/libs/app.jar \
-  config/prod-aiven.properties measure tbd.rapid.v1 2022-03-26T06:00:00
+  config/prod-aiven.properties measure helsearbeidsgiver.rapid 2022-03-26T06:00:00
 
 Consuming messages … [==================================================>] 100.0 %
 behov                                      : 45539 messages, summing to 104 MB
@@ -329,4 +295,4 @@ java -jar build/libs/app.jar \
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub.
 
 ### For NAV-ansatte
-Interne henvendelser kan sendes via Slack i kanalen #team-bømlo-værsågod.
+Interne henvendelser kan sendes via Slack i kanalen #helse-arbeidsgiver.

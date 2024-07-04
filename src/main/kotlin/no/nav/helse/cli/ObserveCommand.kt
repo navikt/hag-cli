@@ -29,7 +29,7 @@ internal class ObserveCommand : Command, JsonRiver.JsonValidationSuccessListener
     override fun execute(factory: ConsumerProducerFactory, args: List<String>) {
         if (args.isEmpty()) throw RuntimeException("Missing required topic arg")
         val topic = args[0]
-        val groupId = "bomli-cli-${Random.nextInt()}"
+        val groupId = "hag-cli-${Random.nextInt()}"
 
         println("Consuming from $topic with consumer group $groupId")
         println("Will NOT be committing any offsets. Starting from LATEST")

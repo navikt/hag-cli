@@ -25,7 +25,7 @@ internal class ConsumeCommand : Command {
         val time = args.getOrNull(2)?.let { LocalDateTime.parse(args[2]) } ?: LocalDateTime.now()
         val timestamp = time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         val searchString = args.getOrNull(3)
-        val groupId = "bomli-cli-${Random.nextInt()}"
+        val groupId = "hag-cli-${Random.nextInt()}"
 
         println("Consuming from $topic with consumer group $groupId")
         println("Will NOT be committing any offsets. Starting from $time with timestamp = $timestamp")

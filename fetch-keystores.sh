@@ -30,10 +30,10 @@ function checkTruststore() {
 }
 
 function getSecrets() {
-    BROKERS=$(k get secret "$1" -n tbd -o jsonpath='{.data.KAFKA_BROKERS}' | base64 -D)
+    BROKERS=$(k get secret "$1" -n helsearbeidsgiver -o jsonpath='{.data.KAFKA_BROKERS}' | base64 -D)
     echo "Brokers: $BROKERS"
-    k get secret "$1" -n tbd -o jsonpath='{.data.client\.keystore\.p12}' | tee "$2.base64" | base64 -D > "$2"
-    k get secret "$1" -n tbd -o jsonpath='{.data.client\.truststore\.jks}' | tee "$3.base64" | base64 -D > "$3"
+    k get secret "$1" -n helsearbeidsgiver -o jsonpath='{.data.client\.keystore\.p12}' | tee "$2.base64" | base64 -D > "$2"
+    k get secret "$1" -n helsearbeidsgiver -o jsonpath='{.data.client\.truststore\.jks}' | tee "$3.base64" | base64 -D > "$3"
     checkKeystore "$2"
     checkTruststore "$3"
 

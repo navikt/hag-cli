@@ -1,1 +1,1 @@
-rootProject.name = "bømlo-cli"
+rootProject.name = "hag-cli"

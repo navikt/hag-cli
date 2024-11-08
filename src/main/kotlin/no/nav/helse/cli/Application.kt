@@ -23,7 +23,8 @@ private val commands = listOf<Command>(
     FollowEventCommand(),
     CheckVersionCommand(),
     ConsumeCommand(),
-    OffsetsCommand()
+    OffsetsCommand(),
+    ProducePaaminnelserCommand()
 )
 
 fun main(args: Array<String>) {

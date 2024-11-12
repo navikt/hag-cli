@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.9.22"
+    kotlin("jvm") version "2.0.21"
 }
 
 buildscript {
@@ -36,14 +36,13 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
 }
 
-tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = "21"
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of("21"))
     }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "21"
-    }
+}
 
+tasks {
     named<Jar>("jar") {
         archiveFileName.set("app.jar")
         manifest {

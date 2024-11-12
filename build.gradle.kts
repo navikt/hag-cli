@@ -26,14 +26,13 @@ repositories {
 }
 
 val rapidsAndRiversCli = "1.24cf512"
-val junitJupiterVersion = "5.10.2"
+val junitJupiterVersion = "5.11.3"
 
 dependencies {
     api("com.github.navikt:rapids-and-rivers-cli:$rapidsAndRiversCli")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 kotlin {

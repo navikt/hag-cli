@@ -2,12 +2,6 @@ plugins {
     kotlin("jvm") version "2.0.21"
 }
 
-buildscript {
-    dependencies {
-        classpath("org.junit.platform:junit-platform-gradle-plugin:1.2.0")
-    }
-}
-
 repositories {
     val githubPassword: String? by project
     mavenCentral()
@@ -25,7 +19,7 @@ repositories {
     maven("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
 }
 
-val rapidsAndRiversCli = "1.24cf512"
+val rapidsAndRiversCli = "1.8bf080c"
 val junitJupiterVersion = "5.11.3"
 
 dependencies {

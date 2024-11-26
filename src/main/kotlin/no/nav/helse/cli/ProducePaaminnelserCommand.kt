@@ -20,9 +20,9 @@ internal class ProducePaaminnelserCommand : Command {
         """
         {
             "@event_name" : "MANUELL_ENDRE_PAAMINNELSE",
-            "uuid" : "${UUID.randomUUID()}",
+            "kontekst_id" : "${UUID.randomUUID()}",
             "data" : {
-                "forespoerselId": "$this"
+                "forespoersel_id": "$this"
             }
         }
         """.trimIndent()

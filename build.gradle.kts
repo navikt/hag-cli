@@ -20,7 +20,7 @@ repositories {
 }
 
 val rapidsAndRiversCli = "1.8bf080c"
-val junitJupiterVersion = "5.11.3"
+val junitJupiterVersion = "5.12.1"
 
 dependencies {
     api("com.github.navikt:rapids-and-rivers-cli:$rapidsAndRiversCli")

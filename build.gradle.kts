@@ -1,11 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.9.22"
-}
-
-buildscript {
-    dependencies {
-        classpath("org.junit.platform:junit-platform-gradle-plugin:1.2.0")
-    }
+    kotlin("jvm") version "2.1.20"
 }
 
 repositories {
@@ -25,25 +19,23 @@ repositories {
     maven("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
 }
 
-val rapidsAndRiversCli = "1.24cf512"
-val junitJupiterVersion = "5.10.2"
+val rapidsAndRiversCli = "1.8bf080c"
+val junitJupiterVersion = "5.12.1"
 
 dependencies {
     api("com.github.navikt:rapids-and-rivers-cli:$rapidsAndRiversCli")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of("21"))
+    }
 }
 
 tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = "21"
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "21"
-    }
-
     named<Jar>("jar") {
         archiveFileName.set("app.jar")
         manifest {
@@ -71,9 +63,5 @@ tasks {
         testLogging {
             events("skipped", "failed")
         }
-    }
-
-    withType<Wrapper> {
-        gradleVersion = "8.5"
     }
 }

@@ -123,19 +123,23 @@ java -jar build/libs/app.jar \
 tbd-spleis-v1:  160 msgs/s [max:  436 msgs/s, avg:   37 msgs/s]
 ```
 
-### Sette offsets manuelt:
+### For å hoppe over en melding på kafka/Sette offsets manuelt:
+1. Finn ut av vilken consumer group og topic name, de finner man lettest i appen sin prod.yml under kafka
+2. Finn ut vilken partisjon og vilken offset det gjeller. De finner man i feilmeldingen under parameternavnene `x_rapids_record_offset` og `x_rapids_record_partition`
+3. Før man starter jobben så må man ta ned spleis og slette HPA, ellers kan HPA skalere opp nye partisjoner veldig fort som ødelegger.
+   1. For å slette HPA: `kubectl delete hpa <appname>`
+   2. For å ta ned spleis: `kubectl scale deploy <appname> --replicas 0`
+   3. Sjekke at appen er nede: `kubectl get pods -l app=<appname>`
 
+   Etter dette kan man kjøre jobben   
+      
+4. Bruk kommandon 
 ```shell
-java -jar build/libs/app.jar \
-  config/prod-aiven.properties set_offsets <consumer group> <topic name>
+   java -jar build/libs/app.jar \
+   config/prod-aiven.properties set_offsets <consumer group> <topic name>
 ```
-
-for eksempel slik:
-
-```shell
-java -jar build/libs/app.jar \
-  config/prod-aiven.properties set_offsets tbd-spleis-v1 tbd.rapid.v1
-```
+5. Scriptet går igjennom partisjon for partisjon, når man kommer til partisjonen som stod i feilmeldingen, så skriver man inn `offset + 1`
+6. Når det er ferdig så setter vi opp antall partisjoner igjen med: `kubectl scale deploy spleis —replicas 12` og for at det skal få virkning så re-runner vi siste actionen på github som deployet noe.
 
 ### Produce melding på topic:
 ```shell

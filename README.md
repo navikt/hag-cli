@@ -127,7 +127,7 @@ tbd-spleis-v1:  160 msgs/s [max:  436 msgs/s, avg:   37 msgs/s]
 1. Finn ut av vilken consumer group og topic name, de finner man lettest i appen sin prod.yml under kafka
 2. Finn ut vilken partisjon og vilken offset det gjeller. De finner man i feilmeldingen under parameternavnene `x_rapids_record_offset` og `x_rapids_record_partition`
 3. Før man starter jobben så må man ta ned spleis og slette HPA, ellers kan HPA skalere opp nye partisjoner veldig fort som ødelegger.
-   1. For å slette HPA: `kubectl delete hpa <appname>`
+   1. For å slette HPA: `kubectl delete hpa <appname>` eller så kan man `kubectl edit hpa spleis` og endre `scaleTargetRef` sin name til en annen app, da slipper man å re-runne github action, men må huske på å sette den tilbake når man skalerer opp
    2. For å ta ned spleis: `kubectl scale deploy <appname> --replicas 0`
    3. Sjekke at appen er nede: `kubectl get pods -l app=<appname>`
 

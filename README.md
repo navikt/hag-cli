@@ -12,28 +12,32 @@ curl -fsLo /usr/local/bin/rr https://github.com/navikt/bomlo-cli/releases/latest
 ### 2. Hente secrets og generere config
 Verktøyet trenger credentials mot Kafka-clusteret for å kunne utføre kommandoer, til dette brukes sertifikater.
 
-Skriptet som henter sertifikater krever navnet på en secret i prod-gcp, og henter også sertifikater for dev hvis man angir
-navnet på en secret i dev-gcp.
+Skriptet som henter sertifikater krever navnet på en secret i miljøet du skal operere mot, prod-gcp eller dev-gcp.
 
+Du må være logget på k8s-clusteret.
 
-Finn navn på en aiven-secret fra **prod-gcp**:
+Finn navn på en aiven-secret fra **prod-gcp** eller **dev-gcp**:
 ```shell
 kubectl get secret -n=tbd | grep aiven-
 ```
-Gjenta eventuelt for **dev-gcp**.
 
-Kjør kommandoen:
+Kjør kommandoen, enten mot prod-gcp:
 ```shell
-./fetch-keystores.sh <name-of-prod-secret> <optional-name-of-dev-secret>
+./fetch-keystores.sh <name-of-prod-secret>
 ```
 
-Det lages automatisk en fil kalt `config/prod-aiven.properties`, og eventuelt en `config/dev-aiven.properties`.
+Eller mot dev-gcp:
+```shell
+./fetch-keystores.sh --dev <name-of-dev-secret>
+```
+
+Det lages automatisk en fil med navn for miljøet man går mot, enten `config/prod-aiven.properties` eller `config/dev-aiven.properties`.
 
 
-### 3. Koble opp mot naisdevice-gateway `aiven-prod`
+### 3. Går du mot prod? Koble opp mot naisdevice-gateway `aiven-prod`
 
 Selv om foregående kommandoer for å liste og hente secrets fungerer fint uten denne er selve CLI-ets kommandoer
-avhengige av den.
+avhengige av den. Mot dev-gcp er det ikke nødvendig å koble opp mot gateway.
 
 ### 4. Kjøre kommandoer
 

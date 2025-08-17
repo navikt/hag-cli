@@ -1,8 +1,8 @@
 #!/bin/zsh
 
-KEYTSTORE_PROD_NAME=aiven-prod-keystore.p12
+KEYSTORE_PROD_NAME=aiven-prod-keystore.p12
 TRUSTORE_PROD_NAME=aiven-prod-truststore.jks
-KEYTSTORE_DEV_NAME=aiven-dev-keystore.p12
+KEYSTORE_DEV_NAME=aiven-dev-keystore.p12
 TRUSTORE_DEV_NAME=aiven-dev-truststore.jks
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
@@ -59,9 +59,9 @@ if test "$#" -eq 0; then
 fi
 
 kx prod-gcp
-getSecrets "$1" $KEYTSTORE_PROD_NAME $TRUSTORE_PROD_NAME "$SCRIPT_DIR/config/prod-aiven.properties"
+getSecrets "$1" $KEYSTORE_PROD_NAME $TRUSTORE_PROD_NAME "$SCRIPT_DIR/config/prod-aiven.properties"
 
 if ! test -z "$2"; then
     kx dev-gcp
-    getSecrets "$2" $KEYTSTORE_DEV_NAME $TRUSTORE_DEV_NAME "$SCRIPT_DIR/config/dev-aiven.properties"
+    getSecrets "$2" $KEYSTORE_DEV_NAME $TRUSTORE_DEV_NAME "$SCRIPT_DIR/config/dev-aiven.properties"
 fi

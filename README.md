@@ -126,20 +126,19 @@ tbd-spleis-v1:  160 msgs/s [max:  436 msgs/s, avg:   37 msgs/s]
 ### For å hoppe over en melding på kafka/Sette offsets manuelt:
 1. Finn ut av vilken consumer group og topic name, de finner man lettest i appen sin prod.yml under kafka
 2. Finn ut vilken partisjon og vilken offset det gjeller. De finner man i feilmeldingen under parameternavnene `x_rapids_record_offset` og `x_rapids_record_partition`
-3. Før man starter jobben så må man ta ned spleis og slette HPA, ellers kan HPA skalere opp nye partisjoner veldig fort som ødelegger.
-   1. For å slette HPA: `kubectl delete hpa <appname>` eller så kan man `kubectl edit hpa spleis` og endre `scaleTargetRef` sin name til en annen app, da slipper man å re-runne github action, men må huske på å sette den tilbake når man skalerer opp
-   2. For å ta ned spleis: `kubectl scale deploy <appname> --replicas 0`
+3. Hvis appen man skal deale med har en HPA, må man ta den ut av spill, ellers kan den skalere opp nye pods veldig fort som går i veien for endring av offsets.
+   1. For å slette HPA: `kubectl delete hpa <appname>`
+      1. eller man kan gjøre `kubectl edit hpa <appname>` og endre `scaleTargetRef` sin name til en annen app, da slipper man å re-runne github action, men må huske på å sette den tilbake når man skalerer opp
+   2. For å ta ned aktuell app: `kubectl scale deploy <appname> --replicas 0` (husk hvor mange replicas/pods den kjørte med, til siste punkt i guiden)
    3. Sjekke at appen er nede: `kubectl get pods -l app=<appname>`
-
-   Etter dette kan man kjøre jobben   
-      
-4. Bruk kommandon 
-```shell
-   java -jar build/libs/app.jar \
-   config/prod-aiven.properties set_offsets <consumer group> <topic name>
-```
+Etter dette kan man endre offsets.
+4. Bruk kommandoen
+    ```shell
+       java -jar build/libs/app.jar \
+       config/prod-aiven.properties set_offsets <consumer group> <topic name>
+    ```
 5. Scriptet går igjennom partisjon for partisjon, når man kommer til partisjonen som stod i feilmeldingen, så skriver man inn `offset + 1`
-6. Når det er ferdig så setter vi opp antall partisjoner igjen med: `kubectl scale deploy spleis —replicas 12` og for at det skal få virkning så re-runner vi siste actionen på github som deployet noe.
+6. Når det er ferdig setter vi opp antall partisjoner igjen med: `kubectl scale deploy <appname> ——replicas <antall replicas>` og for at det skal få virkning så re-runner vi siste actionen på github som deployet noe (eller sette tilbake `scaleTargetRef` for HPA-en)
 
 ### Produce melding på topic:
 ```shell

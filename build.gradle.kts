@@ -26,6 +26,7 @@ dependencies {
     api("com.github.navikt:rapids-and-rivers-cli:$rapidsAndRiversCli")
     implementation("io.ktor:ktor-server-core-jvm:2.3.7")
     implementation("io.ktor:ktor-server-netty-jvm:2.3.7")
+    implementation("io.kubernetes:client-java:18.0.1")
     implementation("io.ktor:ktor-server-html-builder-jvm:2.3.7")
     implementation("io.ktor:ktor-server-call-logging-jvm:2.3.7")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:2.3.7")

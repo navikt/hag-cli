@@ -3,8 +3,6 @@ package no.nav.helse.cli.k8s
 import io.ktor.server.plugins.BadRequestException
 import java.io.File
 import java.nio.file.Paths
-import kotlin.text.get
-import org.apache.kafka.clients.producer.KafkaProducer
 
 enum class SecretType {
     Aiven
@@ -13,24 +11,7 @@ enum class SecretType {
 class KafkaSecretService(
     val secretType: SecretType
 ) {
-    private fun hentSecretMedCache(
-        serviceNavn: String,
-        context: String
-    ): Pair<KubeSecret, Boolean> {
-        val cachedSecret = SecretsCache.getValue(secretType, serviceNavn)
-
-        val secret = cachedSecret ?: this.hentNySecret(serviceNavn, context)
-
-        val secretErCached = cachedSecret != null
-        return Pair(secret, secretErCached)
-    }
-
     fun hentSecret(
-        serviceNavn: String,
-        context: String
-    ): KubeSecret = hentSecretMedCache(serviceNavn, context).first
-
-    private fun hentNySecret(
         serviceNavn: String,
         context: String
     ): KubeSecret {
@@ -100,12 +81,12 @@ fun lagLokalFil(
     navn: String,
     data: ByteArray
 ): String {
-    val kafkaUiDir = Paths.get(File(System.getProperty("user.dir")).absolutePath).toFile()
-    if (!kafkaUiDir.exists()) {
-        kafkaUiDir.mkdir()
+    val keysDir = Paths.get(File(System.getProperty("user.dir"), "keys").absolutePath).toFile()
+    if (!keysDir.exists()) {
+        keysDir.mkdir()
     }
 
-    val file = File(kafkaUiDir, navn)
+    val file = File(keysDir, navn)
     file.writeBytes(data)
     return file.absolutePath
 }

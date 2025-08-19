@@ -8,13 +8,6 @@ import java.io.File
 import java.io.FileReader
 import java.util.*
 
-// MÅ ALLTID VÆRE DEV-GCP
-// MÅ ALLTID VÆRE DEV-GCP
-// MÅ ALLTID VÆRE DEV-GCP
-val KUBE_CTL_CONTEXT_ER_ALLTID_DEV = "dev-gcp"
-// MÅ ALLTID VÆRE DEV-GCP
-// MÅ ALLTID VÆRE DEV-GCP
-// MÅ ALLTID VÆRE DEV-GCP
 
 fun hentDevGcpKubeConfig(context: String): ApiClient {
     val kubeConfigFile = findConfigInHomeDir() ?: throw Exception("KubeConfigFile ikke funnet")

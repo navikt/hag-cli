@@ -4,6 +4,10 @@ import io.ktor.server.plugins.BadRequestException
 import java.io.File
 import java.nio.file.Paths
 
+/*
+Denne koden er kopiert fra HAG-ULV.
+Forenklet for å hente secrets fra Aiven Kafka i Kubernetes.
+ */
 enum class SecretType {
     Aiven
 }

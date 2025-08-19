@@ -59,9 +59,7 @@ class KubeCtlClient(
                     "helsearbeidsgiver",
                     null
                 )
-            val secret = response.data?.mapValues { it.value } ?: throw RuntimeException("No data found in secret")
-            SecretsCache.setValue(serviceName, secret)
-            return secret
+            return response.data?.mapValues { it.value } ?: throw RuntimeException("No data found in secret")
         } catch (e: Exception) {
             throw RuntimeException("Failed to get secret value: ${e.message}", e)
         }

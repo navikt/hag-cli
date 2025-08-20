@@ -1,0 +1,9 @@
+services:
+  importfsp-database:
+          image: postgres:16
+          ports:
+          - "5432:5432"
+          environment:
+          - POSTGRES_USER=importfsp
+          - POSTGRES_PASSWORD=importfsp
+          - POSTGRES_DB=importfsp

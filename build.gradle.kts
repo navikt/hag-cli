@@ -31,6 +31,8 @@ dependencies {
     implementation("io.ktor:ktor-server-call-logging-jvm:2.3.7")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:2.3.7")
     implementation("io.ktor:ktor-server-status-pages-jvm:2.3.7")
+    implementation("no.nav.helsearbeidsgiver:hag-bakgrunnsjobb:1.0.7")
+    implementation("org.postgresql:postgresql:42.7.1")
     testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

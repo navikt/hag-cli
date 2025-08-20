@@ -1,6 +1,5 @@
-package no.nav.helse.cli
+package no.nav.helse.cli.lpsapi
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.server.application.call
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.html.respondHtml
@@ -10,7 +9,6 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import java.util.UUID
-import jdk.internal.joptsimple.internal.Messages.message
 import kotlinx.html.ButtonType
 import kotlinx.html.FormMethod
 import kotlinx.html.a
@@ -19,12 +17,12 @@ import kotlinx.html.br
 import kotlinx.html.button
 import kotlinx.html.form
 import kotlinx.html.h1
-import kotlinx.html.h2
 import kotlinx.html.header
 import kotlinx.html.label
 import kotlinx.html.p
 import kotlinx.html.style
 import kotlinx.html.textInput
+import no.nav.helse.cli.resolveConfigFromProperties
 import no.nav.rapids_and_rivers.cli.Config
 import no.nav.rapids_and_rivers.cli.ConsumerProducerFactory
 import org.apache.kafka.clients.producer.ProducerRecord
@@ -32,20 +30,26 @@ import org.apache.kafka.clients.producer.ProducerRecord
 fun main(args: Array<String>) {
     if (args.isEmpty()) return help()
 
+    val factory = producerFactory(args[0])
+
+    SendVedtaksperiodeApplication(factory, args[0]).startServer()
+}
+
+fun producerFactory(args: String): ConsumerProducerFactory {
     val config: Config
-    if (args[0].equals("prod", true)) {
+    if (args.equals("prod", true)) {
         println("Starter applikasjon i Prod!")
         config = resolveConfigFromProperties("config/prod-aiven.properties")
-    } else if (args[0].equals("dev", true)) {
+    } else if (args.equals("dev", true)) {
         println("Starter applikasjon i Dev!")
         config = resolveConfigFromProperties("config/dev-aiven.properties")
     } else {
-        return help()
+        help()
+        throw Exception("Ugyldig argument: Forventet 'prod' eller 'dev'.")
     }
 
     val factory = ConsumerProducerFactory(config)
-
-    SendVedtaksperiodeApplication(factory, args[0]).startServer()
+    return factory
 }
 
 private fun help() {
@@ -132,15 +136,15 @@ class SendVedtaksperiodeApplication(
             return false
         }
     }
-
-    private fun validateAndCleanUUID(uuid: String): UUID {
-        var uuidCleaned = uuid
-        if (uuid.isNotEmpty() && uuid.contains("'")) {
-            println("Fjerner enkelt anførselstegn fra UUID: $uuid")
-            uuidCleaned = uuid.removeSingleQuotes()
-        }
-        return UUID.fromString(uuidCleaned)
-    }
 }
 
 fun String.removeSingleQuotes(): String = this.replace("'", "")
+
+fun validateAndCleanUUID(uuid: String): UUID {
+    var uuidCleaned = uuid
+    if (uuid.isNotEmpty() && uuid.contains("'")) {
+        println("Fjerner enkelt anførselstegn fra UUID: $uuid")
+        uuidCleaned = uuid.removeSingleQuotes()
+    }
+    return UUID.fromString(uuidCleaned)
+}

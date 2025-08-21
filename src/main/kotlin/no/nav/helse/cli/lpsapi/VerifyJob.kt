@@ -20,11 +20,12 @@ fun executeJob() {
         lpsapiConnection().use { conn ->
             val statement =
                 conn.prepareStatement(
-                    "SELECT * from forespoersel where nav_referanse_id=?::uuid and vedtaksperiode_id=?::uuid and status=?"
+                    "SELECT * from forespoersel where nav_referanse_id=? and vedtaksperiode_id=? and status=?"
                 )
-            statement.setObject(1, forespoersel.forespoerselId,java.sql.Types.OTHER )
-            statement.setObject(2, forespoersel.vedtaksperiodeId, java.sql.Types.OTHER )
-            statement.setObject(3, forespoersel.status, java.sql.Types.OTHER )
+            statement.setObject(1, forespoersel.forespoerselId, java.sql.Types.OTHER)
+            statement.setObject(2, forespoersel.vedtaksperiodeId, java.sql.Types.OTHER)
+            statement.setObject(3, forespoersel.status, java.sql.Types.OTHER)
+
             statement.executeQuery().use { resultSet ->
                 if (resultSet.next()) {
                     println("Forespoersel med ID ${forespoersel.forespoerselId} finnes i LPSAPI med status ${forespoersel.status}.")

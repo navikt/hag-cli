@@ -9,12 +9,12 @@ import kotlin.uuid.ExperimentalUuidApi
 import localConnection
 
 @OptIn(ExperimentalUuidApi::class)
-class LocalDbRepository {
+class LocalDbRepository(var tableName: String) {
     fun getVedtaksperiodeId(): ArrayList<String> {
         val vedtaksperiodeIdlist = arrayListOf<String>()
         localConnection().use { conn ->
             val statement = conn.createStatement()
-            val resultSet = statement.executeQuery("select distinct vedtaksperiode_id from dev_import where imported = 'NY'")
+            val resultSet = statement.executeQuery("select distinct vedtaksperiode_id from $tableName where imported = 'NY'")
             while (resultSet.next()) {
                 val id = resultSet.getString("vedtaksperiode_id")
                 vedtaksperiodeIdlist.add(id)
@@ -30,7 +30,7 @@ class LocalDbRepository {
         localConnection().use { conn ->
             val statement =
                 conn.prepareStatement(
-                    "UPDATE dev_import SET imported = ? WHERE vedtaksperiode_id = ?::uuid"
+                    "UPDATE $tableName SET imported = ? WHERE vedtaksperiode_id = ?::uuid"
                 )
             vedtaksperiodeIdListe.forEach { vedtaksperiodeId ->
                 statement.setString(1, importStatus.name)
@@ -41,12 +41,11 @@ class LocalDbRepository {
         }
     }
 
-    @OptIn(ExperimentalUuidApi::class)
     fun getSendtForespoerseler(): ArrayList<Foresepoersel> {
         arrayListOf<Foresepoersel>().also { list ->
             localConnection().use { conn ->
                 val statement = conn.createStatement()
-                val resultSet = statement.executeQuery("select * from dev_import where imported = 'SENDT'")
+                val resultSet = statement.executeQuery("select * from $tableName where imported = 'SENDT'")
                 while (resultSet.next()) {
                     val forespoerselId = resultSet.getString("forespoersel_id")
                     val vedtaksperiodeId = resultSet.getString("vedtaksperiode_id")
@@ -66,10 +65,10 @@ class LocalDbRepository {
         localConnection().use { conn ->
             val statement =
                 conn.prepareStatement(
-                    "UPDATE dev_import SET imported = ? WHERE forespoersel_id = ?"
+                    "UPDATE $tableName SET imported = ? WHERE forespoersel_id = ?"
                 )
             statement.setString(1, importStatus.name)
-            statement.setObject(2, forespoerselId,java.sql.Types.OTHER )
+            statement.setObject(2, forespoerselId, java.sql.Types.OTHER)
 
             statement.executeUpdate()
         }

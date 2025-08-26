@@ -13,23 +13,28 @@ enum class ImportStatus {
     OK
 }
 
+enum class Environment(
+    var tableName: String
+) {
+    DEV(tableName = "dev_import"),
+    PROD(tableName = "forespoersel_import")
+}
+
 fun main() {
     try {
-        executeJob()
+        executeJob(Environment.DEV)
     } catch (e: Exception) {
         e.printStackTrace()
     }
 }
 
-fun executeJob() {
-    val localDbRepository = LocalDbRepository()
-    val producerFactory = producerFactory("dev")
+fun executeJob(environment: Environment) {
+    val localDbRepository = LocalDbRepository(environment.tableName)
+    val producerFactory = producerFactory(environment.name)
     val vedtaksperiodeIdListe = localDbRepository.getVedtaksperiodeId()
     sendToKafka(producerFactory, vedtaksperiodeIdListe)
     localDbRepository.updateStatus(vedtaksperiodeIdListe, ImportStatus.SENDT)
 }
-
-
 
 private fun sendToKafka(
     producerFactory: ConsumerProducerFactory,
@@ -51,9 +56,6 @@ private fun sendToKafka(
         }
     }
 }
-
-
-
 
 fun localConnection(): Connection {
     val url = "jdbc:postgresql://localhost:5432/importfsp"

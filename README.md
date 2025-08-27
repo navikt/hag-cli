@@ -127,9 +127,9 @@ java -jar build/libs/app.jar \
 tbd-spleis-v1:  160 msgs/s [max:  436 msgs/s, avg:   37 msgs/s]
 ```
 
-### For å hoppe over en melding på kafka/Sette offsets manuelt:
-1. Finn ut av vilken consumer group og topic name, de finner man lettest i appen sin prod.yml under kafka
-2. Finn ut vilken partisjon og vilken offset det gjeller. De finner man i feilmeldingen under parameternavnene `x_rapids_record_offset` og `x_rapids_record_partition`
+### Hoppe over en melding / sette offsets manuelt:
+1. Finn consumer group og topic name, de finner man lettest i appen sin prod.yml under kafka
+2. Finn ut hvilken partisjon og hvilken offset det gjelder. De kan man finne i loggmeldinger under feltnavnene `x_rapids_record_offset` og `x_rapids_record_partition`
 3. Hvis appen man skal deale med har en HPA, må man ta den ut av spill, ellers kan den skalere opp nye pods veldig fort som går i veien for endring av offsets.
    1. For å slette HPA: `kubectl delete hpa <appname>`
       1. eller man kan gjøre `kubectl edit hpa <appname>` og endre `scaleTargetRef` sin name til en annen app, da slipper man å re-runne github action, men må huske på å sette den tilbake når man skalerer opp
@@ -138,8 +138,8 @@ tbd-spleis-v1:  160 msgs/s [max:  436 msgs/s, avg:   37 msgs/s]
 Etter dette kan man endre offsets.
 4. Bruk kommandoen
     ```shell
-       java -jar build/libs/app.jar \
-       config/prod-aiven.properties set_offsets <consumer group> <topic name>
+    java -jar build/libs/app.jar \
+    config/prod-aiven.properties set_offsets <consumer group> <topic name>
     ```
 5. Scriptet går igjennom partisjon for partisjon, når man kommer til partisjonen som stod i feilmeldingen, så skriver man inn `offset + 1`
 6. Når det er ferdig setter vi opp antall partisjoner igjen med: `kubectl scale deploy <appname> ——replicas <antall replicas>` og for at det skal få virkning så re-runner vi siste actionen på github som deployet noe (eller sette tilbake `scaleTargetRef` for HPA-en)
@@ -229,7 +229,7 @@ behov_uten_fullstendig_løsning              : 1
 
 ### Måle antall events (og totalstørrelse) innenfor et tidsvindu
 
-````shell
+```shell
 java -jar build/libs/app.jar \
   config/prod-aiven.properties measure tbd.rapid.v1 2022-03-26T06:00:00
 
@@ -255,7 +255,7 @@ transaksjon_status                         : 213 messages, summing to 0 MB
 oppdrag_kvittering                         : 213 messages, summing to 0 MB
 opprett_oppgave                            : 518 messages, summing to 0 MB
 hendelse_ikke_håndtert                     : 403 messages, summing to 0 MB
-````
+```
 
 ### Trace en melding
 
@@ -265,7 +265,7 @@ Parametere:
 - dybde
 - starttidspunkt - default søker den to timer tilbake
 
-````shell
+```shell
 java -jar build/libs/app.jar \
   config/prod-aiven.properties trace <topic> <@id>
 
@@ -286,51 +286,51 @@ Whole topic read, exiting
 	> Utbetaling (FINAL): 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551306 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 OVERFØRT
 	> Utbetaling: 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551308 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 AKSEPTERT
 	> Utbetaling (FINAL): 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551309 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 AKSEPTERT
-````
+```
 
 ### Følge meldinger på en topic
 
-````shell
+```shell
 java -jar build/libs/app.jar \
   config/prod-aiven.properties follow_topic <topic>
 
 #3, offset 7403511 - påminnelse:  --> {"@event_name":"påminnelse", …
 #5, offset 7403512 - ping:  --> {"@event_name":"ping",…
 …
-````
+```
 
 ### Følge meldinger for en person på en topic
 
-````shell
+```shell
 java -jar build/libs/app.jar \
   config/prod-aiven.properties follow <topic> <fnr>
 
 #3, offset 7403511 - ny_søknad:  --> {"@event_name":"ny_søknad", …
 #5, offset 7403512 - inntektsmelding:  --> {"@event_name":"inntektsmelding",…
 …
-````
+```
 
 ### Følge meldinger av en type
 
-````shell
+```shell
 java -jar build/libs/app.jar \
   config/prod-aiven.properties follow_event <topic> <event_name>
 
 #3, offset 7403511 - pong:  --> {"@event_name":"pong", …
 #5, offset 7403512 - pong:  --> {"@event_name":"pong",…
 …
-````
+```
 
 ### Følge meldinger av en type, fra et bestemt tidspunkt, og søke etter evt. tekst
 
-````shell
+```shell
 java -jar build/libs/app.jar \
   config/prod-aiven.properties consume <topic> <event_name> [<optional localdatetime timestamp>, [<optional search string>]]
 
 #3, offset 7403511 - pong:  --> {"@event_name":"pong", …
 #5, offset 7403512 - pong:  --> {"@event_name":"pong",…
 …
-````
+```
 
 ## Henvendelser
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub.

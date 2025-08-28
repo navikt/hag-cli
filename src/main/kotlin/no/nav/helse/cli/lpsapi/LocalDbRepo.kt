@@ -1,15 +1,14 @@
-@file:OptIn(ExperimentalUuidApi::class)
-
 package no.nav.helse.cli.lpsapi
 
 import ImportStatus
+import java.sql.Connection
+import java.sql.DriverManager
 import java.util.UUID
-import kotlin.use
 import kotlin.uuid.ExperimentalUuidApi
-import localConnection
 
-@OptIn(ExperimentalUuidApi::class)
-class LocalDbRepository(var tableName: String) {
+class LocalDbRepository(
+    var tableName: String
+) {
     fun getVedtaksperiodeId(): ArrayList<String> {
         val vedtaksperiodeIdlist = arrayListOf<String>()
         localConnection().use { conn ->
@@ -75,10 +74,16 @@ class LocalDbRepository(var tableName: String) {
     }
 }
 
-data class Foresepoersel
-    constructor(
-        val forespoerselId: UUID,
-        val vedtaksperiodeId: UUID,
-        val status: String,
-        val imported: String
-    )
+data class Foresepoersel(
+    val forespoerselId: UUID,
+    val vedtaksperiodeId: UUID,
+    val status: String,
+    val imported: String
+)
+
+fun localConnection(): Connection {
+    val url = "jdbc:postgresql://localhost:5432/importfsp"
+    val user = "importfsp"
+    val password = "importfsp"
+    return DriverManager.getConnection(url, user, password)
+}

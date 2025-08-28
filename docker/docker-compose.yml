@@ -1,9 +1,11 @@
 services:
-  importfsp-database:
-          image: postgres:16
-          ports:
-          - "5432:5432"
-          environment:
-          - POSTGRES_USER=importfsp
-          - POSTGRES_PASSWORD=importfsp
-          - POSTGRES_DB=importfsp
+  import-fsp-database:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=importfsp
+      - POSTGRES_PASSWORD=importfsp
+      - POSTGRES_DB=importfsp
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql

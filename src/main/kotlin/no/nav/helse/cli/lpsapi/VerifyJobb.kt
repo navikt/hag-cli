@@ -14,7 +14,7 @@ fun main() {
 }
 
 fun executeJob() {
-    val localDbRepository = LocalDbRepository(Environment.DEV.tableName)
+    val localDbRepository = LocalDbRepository(Environment.PROD.tableName)
     val sendtForespoerseler = localDbRepository.getSendtForespoerseler()
     lpsapiConnection().use { conn ->
         val statement =
@@ -39,12 +39,3 @@ fun executeJob() {
     }
 }
 
-fun lpsapiConnection(): Connection {
-    val url = "jdbc:postgresql://localhost:55559/hag-lps"
-    val user = "mehdi.zare@nav.no"
-    val password = ""
-    val conn = DriverManager.getConnection(url, user, password)
-    conn.autoCommit = false
-    conn.createStatement().execute("SET TRANSACTION READ ONLY")
-    return conn
-}

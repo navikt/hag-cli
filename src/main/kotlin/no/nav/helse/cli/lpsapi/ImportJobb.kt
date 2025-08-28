@@ -17,12 +17,12 @@ enum class Environment(
     var tableName: String
 ) {
     DEV(tableName = "dev_import"),
-    PROD(tableName = "forespoersel_import")
+    PROD(tableName = "prod_import")
 }
 
 fun main() {
     try {
-        executeJob(Environment.DEV)
+        executeJob(Environment.PROD)
     } catch (e: Exception) {
         e.printStackTrace()
     }
@@ -57,9 +57,4 @@ private fun sendToKafka(
     }
 }
 
-fun localConnection(): Connection {
-    val url = "jdbc:postgresql://localhost:5432/importfsp"
-    val user = "importfsp"
-    val password = "importfsp"
-    return DriverManager.getConnection(url, user, password)
-}
+

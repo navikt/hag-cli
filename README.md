@@ -15,28 +15,32 @@ curl -fsLo /usr/local/bin/rr https://github.com/navikt/hag-cli/releases/latest/d
 ### 2. Hente secrets og generere config
 Verktøyet trenger credentials mot Kafka-clusteret for å kunne utføre kommandoer, til dette brukes sertifikater.
 
-Skriptet som henter sertifikater krever navnet på en secret i prod-gcp, og henter også sertifikater for dev hvis man angir
-navnet på en secret i dev-gcp.
+Skriptet som henter sertifikater krever navnet på en secret i miljøet du skal operere mot, prod-gcp eller dev-gcp.
 
+Du må være logget på k8s-clusteret.
 
-Finn navn på en aiven-secret fra **prod-gcp**:
+Finn navn på en aiven-secret fra **prod-gcp** eller **dev-gcp**:
 ```shell
 kubectl get secret -n=helsearbeidsgiver | grep aiven-
 ```
-Gjenta eventuelt for **dev-gcp**.
 
-Kjør kommandoen:
+Kjør kommandoen, enten mot prod-gcp:
 ```shell
-./fetch-keystores.sh <name-of-prod-secret> <optional-name-of-dev-secret>
+./fetch-keystores.sh <name-of-prod-secret>
 ```
 
-Det lages automatisk en fil kalt `config/prod-aiven.properties`, og eventuelt en `config/dev-aiven.properties`.
+Eller mot dev-gcp:
+```shell
+./fetch-keystores.sh --dev <name-of-dev-secret>
+```
+
+Det lages automatisk en fil med navn for miljøet man går mot, enten `config/prod-aiven.properties` eller `config/dev-aiven.properties`.
 
 
-### 3. Koble opp mot naisdevice-gateway `aiven-prod`
+### 3. Går du mot prod? Koble opp mot naisdevice-gateway `aiven-prod`
 
 Selv om foregående kommandoer for å liste og hente secrets fungerer fint uten denne er selve CLI-ets kommandoer
-avhengige av den.
+avhengige av den. Mot dev-gcp er det ikke nødvendig å koble opp mot gateway.
 
 ### 4. Kjøre kommandoer
 
@@ -126,19 +130,22 @@ java -jar build/libs/app.jar \
 helsearbeidsgiver-im-inntekt-v1:  160 msgs/s [max:  436 msgs/s, avg:   37 msgs/s]
 ```
 
-### Sette offsets manuelt:
-
-```shell
-java -jar build/libs/app.jar \
-  config/prod-aiven.properties set_offsets <consumer group> <topic name>
-```
-
-for eksempel slik:
-
-```shell
-java -jar build/libs/app.jar \
-  config/prod-aiven.properties set_offsets helsearbeidsgiver-im-inntekt-v1 helsearbeidsgiver.rapid
-```
+### Hoppe over en melding / sette offsets manuelt:
+1. Finn consumer group og topic name, de finner man lettest i appen sin prod.yml under kafka
+2. Finn ut hvilken partisjon og hvilken offset det gjelder. De kan man finne i loggmeldinger under feltnavnene `x_rapids_record_offset` og `x_rapids_record_partition`
+3. Hvis appen man skal deale med har en HPA, må man ta den ut av spill, ellers kan den skalere opp nye pods veldig fort som går i veien for endring av offsets.
+   1. For å slette HPA: `kubectl delete hpa <appname>`
+      1. eller man kan gjøre `kubectl edit hpa <appname>` og endre `scaleTargetRef` sin name til en annen app, da slipper man å re-runne github action, men må huske på å sette den tilbake når man skalerer opp
+   2. For å ta ned aktuell app: `kubectl scale deploy <appname> --replicas 0` (husk hvor mange replicas/pods den kjørte med, til siste punkt i guiden)
+   3. Sjekke at appen er nede: `kubectl get pods -l app=<appname>`
+Etter dette kan man endre offsets.
+4. Bruk kommandoen
+    ```shell
+    java -jar build/libs/app.jar \
+    config/prod-aiven.properties set_offsets <consumer group> <topic name>
+    ```
+5. Scriptet går igjennom partisjon for partisjon, når man kommer til partisjonen som stod i feilmeldingen, så skriver man inn `offset + 1`
+6. Når det er ferdig setter vi opp antall partisjoner igjen med: `kubectl scale deploy <appname> ——replicas <antall replicas>` og for at det skal få virkning så re-runner vi siste actionen på github som deployet noe (eller sette tilbake `scaleTargetRef` for HPA-en)
 
 ### Produce melding på topic:
 ```shell
@@ -188,7 +195,7 @@ TILGANG_FORESPOERSEL_REQUESTED     : 1
 
 ### Måle antall events (og totalstørrelse) innenfor et tidsvindu
 
-````shell
+```shell
 java -jar build/libs/app.jar \
   config/prod-aiven.properties measure helsearbeidsgiver.rapid 2022-03-26T06:00:00
 
@@ -214,7 +221,7 @@ transaksjon_status                         : 213 messages, summing to 0 MB
 oppdrag_kvittering                         : 213 messages, summing to 0 MB
 opprett_oppgave                            : 518 messages, summing to 0 MB
 hendelse_ikke_håndtert                     : 403 messages, summing to 0 MB
-````
+```
 
 ### Trace en melding
 
@@ -224,7 +231,7 @@ Parametere:
 - dybde
 - starttidspunkt - default søker den to timer tilbake
 
-````shell
+```shell
 java -jar build/libs/app.jar \
   config/prod-aiven.properties trace <topic> <@id>
 
@@ -245,51 +252,51 @@ Whole topic read, exiting
 	> Utbetaling (FINAL): 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551306 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 OVERFØRT
 	> Utbetaling: 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551308 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 AKSEPTERT
 	> Utbetaling (FINAL): 9b8610b4-2ffe-4ff0-b085-e98baf0c91a4 (partition 12, offset 32551309 utbetalingId: bb1ca40d-0ed3-41ca-86ae-805d7f3191e5 AKSEPTERT
-````
+```
 
 ### Følge meldinger på en topic
 
-````shell
+```shell
 java -jar build/libs/app.jar \
   config/prod-aiven.properties follow_topic <topic>
 
 #3, offset 7403511 - påminnelse:  --> {"@event_name":"påminnelse", …
 #5, offset 7403512 - ping:  --> {"@event_name":"ping",…
 …
-````
+```
 
 ### Følge meldinger for en person på en topic
 
-````shell
+```shell
 java -jar build/libs/app.jar \
   config/prod-aiven.properties follow <topic> <fnr>
 
 #3, offset 7403511 - ny_søknad:  --> {"@event_name":"ny_søknad", …
 #5, offset 7403512 - inntektsmelding:  --> {"@event_name":"inntektsmelding",…
 …
-````
+```
 
 ### Følge meldinger av en type
 
-````shell
+```shell
 java -jar build/libs/app.jar \
   config/prod-aiven.properties follow_event <topic> <event_name>
 
 #3, offset 7403511 - pong:  --> {"@event_name":"pong", …
 #5, offset 7403512 - pong:  --> {"@event_name":"pong",…
 …
-````
+```
 
 ### Følge meldinger av en type, fra et bestemt tidspunkt, og søke etter evt. tekst
 
-````shell
+```shell
 java -jar build/libs/app.jar \
   config/prod-aiven.properties consume <topic> <event_name> [<optional localdatetime timestamp>, [<optional search string>]]
 
 #3, offset 7403511 - pong:  --> {"@event_name":"pong", …
 #5, offset 7403512 - pong:  --> {"@event_name":"pong",…
 …
-````
+```
 
 ## Henvendelser
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub.

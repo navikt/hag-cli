@@ -1,5 +1,6 @@
 package no.nav.helse.cli
 
+import no.nav.helse.cli.lpsapi.FollowTopicCommand
 import no.nav.rapids_and_rivers.cli.*
 import org.slf4j.LoggerFactory
 import kotlin.system.exitProcess

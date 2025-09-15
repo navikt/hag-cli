@@ -3,11 +3,12 @@ package no.nav.helse.cli.lpsapi
 import ImportStatus
 import java.sql.Connection
 import java.sql.DriverManager
+import java.util.Date
 import java.util.UUID
 import kotlin.uuid.ExperimentalUuidApi
 
 class LocalDbRepository(
-    var tableName: String
+    val tableName: String
 ) {
     fun getVedtaksperiodeId(): ArrayList<String> {
         val vedtaksperiodeIdlist = arrayListOf<String>()
@@ -78,7 +79,8 @@ data class Foresepoersel(
     val forespoerselId: UUID,
     val vedtaksperiodeId: UUID,
     val status: String,
-    val imported: String
+    val imported: String,
+    val opprettet: Date? = null
 )
 
 fun localConnection(): Connection {

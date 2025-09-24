@@ -36,6 +36,8 @@ Eller mot dev-gcp:
 
 Det lages automatisk en fil med navn for miljøet man går mot, enten `config/prod-aiven.properties` eller `config/dev-aiven.properties`.
 
+Eller bruk kafkaSecretService for å hente secrets:
+
 
 ### 3. Går du mot prod? Koble opp mot naisdevice-gateway `aiven-prod`
 

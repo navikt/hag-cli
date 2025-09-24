@@ -1,6 +1,5 @@
 package no.nav.helse.cli.k8s
 
-import io.ktor.server.plugins.BadRequestException
 import java.io.File
 import java.nio.file.Paths
 
@@ -32,7 +31,7 @@ class KafkaSecretService(
         val targetServiceNavn =
             navnListe
                 .find { it.contains(serviceNavn) }
-                ?: throw BadRequestException("Fant ikke service. Må være en av disse:\n${navnListe.joinToString("\n")}")
+                ?: throw Exception("Fant ikke service. Må være en av disse:\n${navnListe.joinToString("\n")}")
 
         return kubeCtlClient.getSecrets(targetServiceNavn)
     }

@@ -4,6 +4,7 @@ import io.kubernetes.client.openapi.ApiClient
 import io.kubernetes.client.openapi.Configuration
 import io.kubernetes.client.openapi.apis.CoreV1Api
 import io.kubernetes.client.openapi.models.V1SecretList
+import kotlinx.html.Entities
 
 typealias KubeSecret = Map<String, ByteArray>
 
@@ -28,23 +29,9 @@ class KubeCtlClient(
     }
 
     private fun getServiceNames(): List<String> {
-        val secrets: V1SecretList =
-            api.listNamespacedSecret(
-                "helsearbeidsgiver",
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-            )
-
+        val secrets: V1SecretList = api.listNamespacedSecret("helsearbeidsgiver").execute()
         return secrets.items
-            .map { it.metadata?.name.toString() }
+            .mapNotNull { it.metadata?.name }
     }
 
     private fun getServiceWithName(name: String): List<String> = getServiceNames().filter { it.contains(name) }
@@ -56,10 +43,9 @@ class KubeCtlClient(
             val response =
                 api.readNamespacedSecret(
                     serviceName,
-                    "helsearbeidsgiver",
-                    null
+                    "helsearbeidsgiver"
                 )
-            return response.data?.mapValues { it.value } ?: throw RuntimeException("No data found in secret")
+            return response.execute().data?.mapValues { it.value } ?: throw RuntimeException("No data found in secret")
         } catch (e: Exception) {
             throw RuntimeException("Failed to get secret value: ${e.message}", e)
         }

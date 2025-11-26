@@ -3,6 +3,7 @@ import org.gradle.kotlin.dsl.tasks
 
 plugins {
     kotlin("jvm") version "2.2.10"
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 repositories {
@@ -27,10 +28,11 @@ val junitJupiterVersion = "5.12.1"
 
 dependencies {
     api("com.github.navikt:rapids-and-rivers-cli:$rapidsAndRiversCli")
-
+    implementation("no.nav.helsearbeidsgiver:utils:0.9.0")
     implementation("io.kubernetes:client-java:24.0.0")
     implementation("io.ktor:ktor-server-html-builder-jvm:3.3.0")
     implementation("io.ktor:ktor-server-call-logging-jvm:3.3.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:3.3.0")
     implementation("io.ktor:ktor-server-status-pages-jvm:3.3.0")
     implementation("no.nav.helsearbeidsgiver:hag-bakgrunnsjobb:1.0.7")

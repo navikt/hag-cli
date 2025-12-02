@@ -21,7 +21,7 @@ data class Sykmelding(
     val orgnr: Orgnr,
     val foedselsdato: LocalDate,
     val fulltNavn: String,
-    val sykmeldingsperioder: List<Sykmeldingsperiode>,
+    val sykmeldingsperioder: List<Sykmeldingsperiode>
 ) : Melding()
 
 @Serializable
@@ -29,7 +29,7 @@ data class Sykmelding(
 data class Sykepengesoeknad(
     val soeknadId: UUID,
     val sykmeldingId: UUID,
-    val orgnr: Orgnr,
+    val orgnr: Orgnr
 ) : Melding()
 
 @Serializable
@@ -37,8 +37,22 @@ data class Sykepengesoeknad(
 data class Inntektsmeldingsforespoersel(
     val forespoerselId: UUID,
     val sykmeldingId: UUID,
-    val orgnr: Orgnr,
+    val orgnr: Orgnr
 ) : Melding()
+
+@Serializable
+@SerialName("UtgaattInntektsmeldingForespoersel")
+data class UtgaattInntektsmeldingForespoersel(
+    val forespoerselId: UUID,
+    val sykmeldingId: UUID,
+    val orgnr: Orgnr
+) : Melding()
+
+@Serializable
+data class Sykmeldingsperiode(
+    val fom: LocalDate,
+    val tom: LocalDate
+)
 
 @Serializable
 @SerialName("Inntektsmelding")
@@ -48,37 +62,16 @@ data class Inntektsmelding(
     val sykmeldingId: UUID,
     val orgnr: Orgnr,
     val status: Status,
-    val aarsakInnsending: AarsakInnsending,
-    val kilde: Kilde,
+    val kanal: Kanal
 ) : Melding() {
     @Serializable
     enum class Status {
-        MOTTATT,
         GODKJENT,
-        FEILET,
+        FEILET
     }
 
-    enum class AarsakInnsending {
-        NY,
-        Endring,
-    }
-
-    enum class Kilde {
-        API,
-        NAV_PORTAL,
+    enum class Kanal {
+        NAV_NO,
+        HR_SYSTEM_API
     }
 }
-
-@Serializable
-data class Sykmeldingsperiode(
-    val fom: LocalDate,
-    val tom: LocalDate,
-)
-
-@Serializable
-@SerialName("UtgaattInntektsmeldingForespoersel")
-data class UtgaattInntektsmeldingForespoersel(
-    val forespoerselId: UUID,
-    val sykmeldingId: UUID,
-    val orgnr: Orgnr,
-) : Melding()

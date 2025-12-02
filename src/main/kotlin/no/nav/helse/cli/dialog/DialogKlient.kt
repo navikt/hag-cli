@@ -42,7 +42,6 @@ fun main() {
     dialogKlient.sendToKafka(sykmelding)
     dialogKlient.sendToKafka(sykepengesoeknad)
     dialogKlient.sendToKafka(inntektsmeldingsforespoersel)
-    dialogKlient.sendToKafka(inntektsmeldingMottatt)
     dialogKlient.sendToKafka(inntektsmeldingAvvist)
     dialogKlient.sendToKafka(inntektsmeldingGodkjent)
     dialogKlient.sendToKafka(utgaattInntektsmeldingForespoersel)

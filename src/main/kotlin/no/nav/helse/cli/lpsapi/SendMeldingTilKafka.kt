@@ -4,7 +4,8 @@ import executeJob
 import no.nav.rapids_and_rivers.cli.ConsumerProducerFactory
 import org.apache.kafka.clients.producer.ProducerRecord
 
-private fun sendToKafka(
+
+fun sendForespoerselOppdaterForespurtData(
     producerFactory: ConsumerProducerFactory,
     uuid: String
 ) {
@@ -29,7 +30,7 @@ private fun sendToKafka(
 fun main() {
     try {
         val producerFactory = producerFactory(Environment.DEV.name)
-        sendToKafka(producerFactory, "920b67d5-f0b2-4cf8-9997-05a9ac478bcd")
+        sendForespoerselOppdaterForespurtData(producerFactory, TODO("Skriv inn uuid for forespørsel du vil oppdatere"))
     } catch (e: Exception) {
         e.printStackTrace()
     }

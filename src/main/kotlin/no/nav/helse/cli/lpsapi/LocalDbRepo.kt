@@ -6,6 +6,7 @@ import java.sql.DriverManager
 import java.util.Date
 import java.util.UUID
 import kotlin.uuid.ExperimentalUuidApi
+import no.nav.hag.utils.bakgrunnsjobb.exposed.ExposedBakgrunnsjobb.status
 
 class LocalDbRepository(
     val tableName: String
@@ -21,6 +22,35 @@ class LocalDbRepository(
             }
         }
         return vedtaksperiodeIdlist
+    }
+
+    fun getNyeForespoersler(): ArrayList<UUID> {
+        arrayListOf<UUID>().also { list ->
+            localConnection().use { conn ->
+                val statement = conn.createStatement()
+                val resultSet = statement.executeQuery("select * from $tableName where imported = 'NY'")
+                while (resultSet.next()) {
+                    val forespoerselId = resultSet.getString("forespoersel_id")
+                    list.add(UUID.fromString(forespoerselId))
+                }
+            }
+            return list
+        }
+    }
+
+    fun updateStatusByForespoerselId(
+        forespoerselId: UUID,
+        importStatus: ImportStatus
+    ) {
+        localConnection().use { conn ->
+            val statement =
+                conn.prepareStatement(
+                    "UPDATE $tableName SET imported = ? WHERE forespoersel_id = ?::uuid"
+                )
+            statement.setString(1, importStatus.name)
+            statement.setString(2, forespoerselId.toString())
+            statement.executeUpdate()
+        }
     }
 
     fun updateStatus(

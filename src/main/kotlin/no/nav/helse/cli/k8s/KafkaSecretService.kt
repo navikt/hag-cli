@@ -5,7 +5,7 @@ import java.nio.file.Paths
 
 fun main() {
     // Bygger Kafka config for dev-gcp og prod-gcp. Endre serviceNavn for å hente andre secrets.
-    buildKafkaConfig("sykepenger-im-lps-api", "dev-gcp")
+    buildKafkaConfig("fritakagp", "dev-gcp")
    // buildKafkaConfig("dialog", "prod-gcp")
 }
 
